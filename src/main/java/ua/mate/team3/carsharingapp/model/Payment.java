@@ -12,11 +12,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 import ua.mate.team3.carsharingapp.enums.Status;
 import ua.mate.team3.carsharingapp.enums.Type;
-import lombok.Data;
 
 @Data
 @Entity
