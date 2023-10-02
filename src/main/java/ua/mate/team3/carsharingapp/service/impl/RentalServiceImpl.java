@@ -1,5 +1,8 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.mate.team3.carsharingapp.dto.rental.CreateRentalRequestDto;
@@ -7,10 +10,6 @@ import ua.mate.team3.carsharingapp.dto.rental.ResponseRentalDto;
 import ua.mate.team3.carsharingapp.mapper.RentalMapper;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
 import ua.mate.team3.carsharingapp.service.RentalService;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

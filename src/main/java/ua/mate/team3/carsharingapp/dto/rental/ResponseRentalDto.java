@@ -1,10 +1,8 @@
 package ua.mate.team3.carsharingapp.dto.rental;
 
-import jakarta.persistence.Column;
+import java.time.LocalDateTime;
 import lombok.Data;
 import ua.mate.team3.carsharingapp.model.Car;
-
-import java.time.LocalDateTime;
 
 @Data
 public class ResponseRentalDto {
