@@ -9,13 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -37,14 +36,12 @@ public class Rental {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cars_id", nullable = false)
-    @Column(nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Car car;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @Column(nullable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private User user;
