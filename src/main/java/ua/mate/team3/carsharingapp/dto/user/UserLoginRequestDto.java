@@ -1,4 +1,4 @@
-package ua.mate.team3.carsharingapp.dto;
+package ua.mate.team3.carsharingapp.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
