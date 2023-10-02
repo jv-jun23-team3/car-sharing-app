@@ -22,7 +22,7 @@ public class AuthenticationService {
                         requestDto.getPassword())
         );
 
-        String token = jwtUtil.generateToken(requestDto.getEmail());
+        String token = jwtUtil.generateToken(authentication.getName());
         UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
         userLoginResponseDto.setToken(token);
         return userLoginResponseDto;
