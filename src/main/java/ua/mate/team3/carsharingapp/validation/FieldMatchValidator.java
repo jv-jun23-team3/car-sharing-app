@@ -2,7 +2,7 @@ package ua.mate.team3.carsharingapp.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ua.mate.team3.carsharingapp.dto.UserRegistrationRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.UserRegistrationRequestDto;
 
 public class FieldMatchValidator
         implements ConstraintValidator<FieldMatch, UserRegistrationRequestDto> {
