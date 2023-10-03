@@ -1,5 +1,6 @@
 package ua.mate.team3.carsharingapp.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,7 @@ public class CarController {
     private final CarService carService;
 
     @PostMapping
-    public CarDto saveCar(@RequestBody CreateCarRequestDto car) {
+    public CarDto saveCar(@RequestBody @Valid CreateCarRequestDto car) {
         return carService.save(car);
     }
 
@@ -45,7 +46,8 @@ public class CarController {
     }
 
     @PutMapping("/{id}")
-    public CarDto update(@PathVariable Long id, @RequestBody CreateCarRequestDto carRequestDto) {
+    public CarDto update(@PathVariable Long id,
+                         @RequestBody @Valid CreateCarRequestDto carRequestDto) {
         return carService.update(id, carRequestDto);
     }
 }

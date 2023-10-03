@@ -29,8 +29,7 @@ public class AuthenticationService {
     }
 
     public Long getUserId() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return user.getId();
+        return getUser().getId();
     }
 
     public User getUser() {
