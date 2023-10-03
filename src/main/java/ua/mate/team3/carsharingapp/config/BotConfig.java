@@ -23,11 +23,6 @@ public class BotConfig {
     @Value(value = "${bogdan.telegram.bot.name}")
     private String bogdanBotUserName;
 
-    @Value(value = "${oleg.telegram.token}")
-    private String olegBotToken;
-    @Value(value = "${oleg.telegram.bot.name}")
-    private String olegBotUserName;
-
     @Value(value = "${vitaliy.telegram.token}")
     private String vitaliyBotToken;
     @Value(value = "${vitaliy.telegram.bot.name}")
@@ -41,11 +36,6 @@ public class BotConfig {
     @Bean
     public TelegramBot arsenTelegramBot() {
         return new TelegramBot(arsenBotToken, arsenBotUserName);
-    }
-
-    @Bean
-    public TelegramBot olegTelegramBot() {
-        return new TelegramBot(olegBotToken, olegBotUserName);
     }
 
     @Bean
@@ -69,7 +59,6 @@ public class BotConfig {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(arsenTelegramBot());
             telegramBotsApi.registerBot(bogdanTelegramBot());
-            telegramBotsApi.registerBot(olegTelegramBot());
             telegramBotsApi.registerBot(vitaliyTelegramBot());
             telegramBotsApi.registerBot(romaTelegramBot());
         } catch (TelegramApiException e) {
