@@ -1,9 +1,8 @@
 package ua.mate.team3.carsharingapp.bots;
 
+import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.annotation.PostConstruct;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,11 +13,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ua.mate.team3.carsharingapp.exception.NotificationException;
 
 public class TelegramBot extends TelegramLongPollingBot {
-    private static final String WELCOME_MESSAGE = """
-            Welcome to the Car Sharing Bot.
-            With this bot, you will be able to conveniently manage your rentals
-            and receive notifications about the status of your rental.
-            """;
+    private static final String WELCOME_MESSAGE = "Welcome to the Car Sharing Bot. "
+            + "With this bot, you will be able to conveniently manage your rentals "
+            + "and receive notifications about the status of your rental.";
     private static final String RENTAL_COMPLETED_MESSAGE =
             ", your rental successfully completed.";
     private static final String RENTAL_ENDED_MESSAGE =
@@ -46,10 +43,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             String message = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
             switch (message) {
-                case START_COMMAND -> startCommandReceived(chatId, getName(update));
-                case NEW_RENTAL_COMMAND -> newRentalCommandReceived(chatId, getName(update));
-                case END_RENTAL_COMMAND -> endRentalCommandReceived(chatId, getName(update));
-                default -> sendMessage(chatId, COMMAND_NOT_FOUND_MESSAGE);
+                case START_COMMAND: startCommandReceived(chatId, getName(update));
+                    break;
+                case NEW_RENTAL_COMMAND: newRentalCommandReceived(chatId, getName(update));
+                    break;
+                case END_RENTAL_COMMAND: endRentalCommandReceived(chatId, getName(update));
+                    break;
+                default: sendMessage(chatId, COMMAND_NOT_FOUND_MESSAGE);
             }
         }
     }
