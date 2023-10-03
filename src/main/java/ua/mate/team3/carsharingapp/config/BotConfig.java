@@ -13,23 +13,56 @@ import ua.mate.team3.carsharingapp.exception.NotificationException;
 
 @Configuration
 public class BotConfig {
-    @Value(value = "${telegram.token}")
-    private String botToken;
-    @Value(value = "${telegram.bot.name}")
-    private String botUserName;
+    @Value(value = "${arsen.telegram.token}")
+    private String arsenBotToken;
+    @Value(value = "${arsen.telegram.bot.name}")
+    private String arsenBotUserName;
+
+    @Value(value = "${bogdan.telegram.token}")
+    private String bogdanBotToken;
+    @Value(value = "${bogdan.telegram.bot.name}")
+    private String bogdanBotUserName;
+
+    @Value(value = "${vitaliy.telegram.token}")
+    private String vitaliyBotToken;
+    @Value(value = "${vitaliy.telegram.bot.name}")
+    private String vitaliyBotUserName;
+
+    @Value(value = "${roma.telegram.token}")
+    private String romaBotToken;
+    @Value(value = "${roma.telegram.bot.name}")
+    private String romaBotUserName;
 
     @Bean
-    public TelegramBot telegramBot() {
-        return new TelegramBot(botToken, botUserName);
+    public TelegramBot arsenTelegramBot() {
+        return new TelegramBot(arsenBotToken, arsenBotUserName);
+    }
+
+    @Bean
+    public TelegramBot bogdanTelegramBot() {
+        return new TelegramBot(bogdanBotToken, bogdanBotUserName);
+    }
+
+    @Bean
+    public TelegramBot romaTelegramBot() {
+        return new TelegramBot(romaBotToken, romaBotUserName);
+    }
+
+    @Bean
+    public TelegramBot vitaliyTelegramBot() {
+        return new TelegramBot(vitaliyBotToken, vitaliyBotUserName);
     }
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(telegramBot());
+            telegramBotsApi.registerBot(arsenTelegramBot());
+            telegramBotsApi.registerBot(bogdanTelegramBot());
+            telegramBotsApi.registerBot(vitaliyTelegramBot());
+            telegramBotsApi.registerBot(romaTelegramBot());
         } catch (TelegramApiException e) {
-            throw new NotificationException("Can't initialize bot", e);
+            throw new NotificationException("Can't initialize bot ", e);
         }
     }
 }
