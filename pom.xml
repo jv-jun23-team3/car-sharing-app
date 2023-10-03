@@ -15,7 +15,7 @@
     <name>car-sharing-app</name>
     <description>car-sharing-app</description>
     <properties>
-        <java.version>17</java.version>
+        <java.version>20</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
         <maven.checkstyle.plugin.configLocation>checkstyle.xml</maven.checkstyle.plugin.configLocation>
@@ -117,6 +117,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.telegram</groupId>
+            <artifactId>telegrambots</artifactId>
+            <version>6.8.0</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
