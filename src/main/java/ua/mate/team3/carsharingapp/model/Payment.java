@@ -15,8 +15,6 @@ import java.math.BigDecimal;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import ua.mate.team3.carsharingapp.enums.Status;
-import ua.mate.team3.carsharingapp.enums.Type;
 
 @Data
 @Entity
@@ -44,4 +42,12 @@ public class Payment {
     private BigDecimal amount;
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    public enum Type {
+        PAYMENT, FINE
+    }
+
+    public enum Status {
+        PENDING, PAID
+    }
 }
