@@ -8,10 +8,16 @@ import ua.mate.team3.carsharingapp.service.NotificationService;
 @Service
 @RequiredArgsConstructor
 public class TelegramNotificationService implements NotificationService {
-    private final TelegramBot bot;
+    private final TelegramBot arsenTelegramBot;
+    private final TelegramBot bogdanTelegramBot;
+    private final TelegramBot romaTelegramBot;
+    private final TelegramBot vitaliyTelegramBot;
 
     @Override
-    public void sendNotification(String string) {
-
+    public void sendNotification(String message) {
+        arsenTelegramBot.sendMessage(arsenTelegramBot.getChatId(), message);
+        bogdanTelegramBot.sendMessage(bogdanTelegramBot.getChatId(), message);
+        romaTelegramBot.sendMessage(bogdanTelegramBot.getChatId(), message);
+        vitaliyTelegramBot.sendMessage(vitaliyTelegramBot.getChatId(), message);
     }
 }
