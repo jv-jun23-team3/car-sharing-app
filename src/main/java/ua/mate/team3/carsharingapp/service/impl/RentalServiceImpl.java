@@ -70,7 +70,7 @@ public class RentalServiceImpl implements RentalService {
         rental.setRentalDate(LocalDateTime.now());
         rental.setReturnDate(rentalRequestDto.getReturnDate());
         Car car = carRepository.findById(rentalRequestDto.getCarId())
-                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Car not found"));
         if (car.getInventory() < 1) {
             throw new IllegalArgumentException("Inventory cannot be less than 0");
         }
