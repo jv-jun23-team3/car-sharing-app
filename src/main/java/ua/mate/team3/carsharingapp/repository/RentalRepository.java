@@ -9,7 +9,7 @@ import ua.mate.team3.carsharingapp.model.Rental;
 
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Long> {
-    @Query("SELECT r FROM Rental r "
+    @Query("FROM Rental r "
             + "LEFT JOIN FETCH r.car "
             + "LEFT JOIN FETCH r.user "
             + "WHERE r.user.id = :userId "
