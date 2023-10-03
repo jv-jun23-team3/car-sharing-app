@@ -1,21 +1,21 @@
 databaseChangeLog:
   - changeSet:
-        id: insert-user-role
-        author: Vitalii Kukoba
-        preConditions:
-          - sqlCheck:
-              expectedResult: 1
-              sql: SELECT COUNT(*) FROM users WHERE email='admin@example.com'
-          - sqlCheck:
-              expectedResult: 1
-              sql: SELECT COUNT(*) FROM roles WHERE name='ROLE_MANAGER'
-        changes:
-          - insert:
-              tableName: user_role
-              columns:
-                - column:
-                    name: user_id
-                    valueComputed: (SELECT id FROM users WHERE email='admin@example.com')
-                - column:
-                    name: role_id
-                    valueComputed: (SELECT id FROM roles WHERE name='ROLE_MANAGER')
+      id: insert-user-role
+      author: Vitalii Kukoba
+      preConditions:
+        - sqlCheck:
+            expectedResult: 1
+            sql: SELECT COUNT(*) FROM users WHERE email='admin@example.com'
+        - sqlCheck:
+            expectedResult: 1
+            sql: SELECT COUNT(*) FROM roles WHERE name='ROLE_MANAGER'
+      changes:
+        - insert:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: (SELECT id FROM users WHERE email='admin@example.com')
+              - column:
+                  name: role_id
+                  valueComputed: (SELECT id FROM roles WHERE name='ROLE_MANAGER')
