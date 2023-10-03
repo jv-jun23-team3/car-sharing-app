@@ -13,7 +13,7 @@ public class CreateCarRequestDto {
     private String model;
     @NotBlank
     private String brand;
-    @NotBlank
+    @NotNull
     private Car.TypeName type;
     @NotNull
     @Min(1)

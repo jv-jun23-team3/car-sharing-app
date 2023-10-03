@@ -4,6 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,42 +34,27 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
-    public List<ResponseRentalDto> getAllOfCurrentUserByState(Boolean isActive, Pageable pageable) {
-        return getAllRentalsByUserIdAndState(authenticationService
-                .getUser().getId(), isActive, pageable);
-    }
-
-    @Override
-    public List<ResponseRentalDto> getAllOfCurrentUser(Pageable pageable) {
-        return rentalRepository.findAllByUserId(
-                authenticationService.getUser().getId(), pageable).stream()
-                .map(rentalMapper::toResponseDto)
-                .toList();
-    }
-
-    @Override
     public ResponseRentalDto getById(Long id) {
-        return rentalMapper.toResponseDto(rentalRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Can't find rental by id: " + id)
-        ));
+        Optional<Rental> rental = rentalRepository.findById(id);
+        if (rental.isEmpty() || !Objects.equals(rental.get().getUser().getId(),
+                authenticationService.getUserId())) {
+            throw new EntityNotFoundException("Can't find rental by id: " + id);
+        }
+        return rentalMapper.toResponseDto(rental.get());
     }
 
     @Override
     @Transactional
     public ResponseRentalDto update(Long id) {
-        Rental updatedRental = rentalRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Can't find rental by id: " + id)
-        );
-        updatedRental.setActualReturnDate(LocalDateTime.now());
-        Car updateCar = updatedRental.getCar();
+        Optional<Rental> updatedRental = rentalRepository.findById(id);
+        if (updatedRental.isEmpty() || updatedRental.get().getActualReturnDate() != null) {
+            throw new EntityNotFoundException("Can't find rental by id: " + id);
+        }
+        updatedRental.get().setActualReturnDate(LocalDateTime.now());
+        Car updateCar = updatedRental.get().getCar();
         updateCar.setInventory(updateCar.getInventory() + 1);
         carRepository.save(updateCar);
-        return rentalMapper.toResponseDto(rentalRepository.save(updatedRental));
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        rentalRepository.deleteById(id);
+        return rentalMapper.toResponseDto(rentalRepository.save(updatedRental.get()));
     }
 
     @Override
@@ -84,6 +71,9 @@ public class RentalServiceImpl implements RentalService {
         rental.setReturnDate(rentalRequestDto.getReturnDate());
         Car car = carRepository.findById(rentalRequestDto.getCarId())
                 .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+        if (car.getInventory() < 1) {
+            throw new IllegalArgumentException("Inventory cannot be less than 0");
+        }
         car.setInventory(car.getInventory() - 1);
         rental.setCar(carRepository.save(car));
         rental.setUser(authenticationService.getUser());
