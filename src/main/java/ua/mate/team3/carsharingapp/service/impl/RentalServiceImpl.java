@@ -1,5 +1,6 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import ua.mate.team3.carsharingapp.model.Rental;
 import ua.mate.team3.carsharingapp.repository.CarRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
 import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.RentalService;
 
 @Service
@@ -26,11 +28,17 @@ public class RentalServiceImpl implements RentalService {
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
     private final AuthenticationService authenticationService;
+    private final NotificationService notificationService;
+    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
     public ResponseRentalDto save(CreateRentalRequestDto requestDto) {
-        return rentalMapper.toResponseDto(rentalRepository.save(createRental(requestDto)));
+        ResponseRentalDto responseDto =
+                rentalMapper.toResponseDto(rentalRepository.save(createRental(requestDto)));
+        notificationService.sendNotification(
+                "New rental " + responseDto + " is created successfully");
+        return responseDto;
     }
 
     @Override
@@ -54,6 +62,8 @@ public class RentalServiceImpl implements RentalService {
         Car updateCar = updatedRental.get().getCar();
         updateCar.setInventory(updateCar.getInventory() + 1);
         carRepository.save(updateCar);
+        notificationService.sendNotification("The rental "
+                + updatedRental.get() + " is returned");
         return rentalMapper.toResponseDto(rentalRepository.save(updatedRental.get()));
     }
 
