@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserInfoRequestDto;
-import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.service.UserService;
 
 @RestController
@@ -24,7 +24,7 @@ public class UserController {
     @PreAuthorize("hasRole('MANAGER')")
     public void updateUserRole(@PathVariable Long id,
                                @RequestBody UpdateUserRoleRequestDto requestDto) {
-         userService.updateUserRole(id, requestDto);
+        userService.updateUserRole(id, requestDto);
     }
 
     @GetMapping("/me")
