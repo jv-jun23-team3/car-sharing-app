@@ -39,7 +39,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: amount_to_pay
+                  name: amount
                   type: decimal(10, 2)
                   constraints:
                     nullable: false
