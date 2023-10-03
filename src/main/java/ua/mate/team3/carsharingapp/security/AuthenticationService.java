@@ -6,8 +6,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ua.mate.team3.carsharingapp.dto.user.UserLoginRequestDto;
-import ua.mate.team3.carsharingapp.dto.user.UserLoginResponseDto;
+import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginResponseDto;
 import ua.mate.team3.carsharingapp.model.User;
 
 @Service

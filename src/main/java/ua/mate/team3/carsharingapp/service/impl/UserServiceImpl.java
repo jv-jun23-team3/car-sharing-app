@@ -1,17 +1,23 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
+import jakarta.transaction.Transactional;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ua.mate.team3.carsharingapp.dto.user.UserRegistrationRequestDto;
-import ua.mate.team3.carsharingapp.dto.user.UserRegistrationResponseDto;
+import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationResponseDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserInfoRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
 import ua.mate.team3.carsharingapp.exception.RegistrationException;
 import ua.mate.team3.carsharingapp.mapper.UserMapper;
 import ua.mate.team3.carsharingapp.model.Role;
 import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.RoleRepository;
 import ua.mate.team3.carsharingapp.repository.UserRepository;
+import ua.mate.team3.carsharingapp.security.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.UserService;
 
 @Service
@@ -21,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final AuthenticationService authenticationService;
 
     @Override
     public UserRegistrationResponseDto register(UserRegistrationRequestDto request)
@@ -32,6 +39,29 @@ public class UserServiceImpl implements UserService {
         User user = setUserFromRequest(request);
         User savedUser = userRepository.save(user);
         return userMapper.toResponseDto(savedUser);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException("Can`t find user by id: " + id));
+        user.setRoles(Set.of(requestDto.getRole()));
+        User updatedUser = userRepository.save(user);
+    }
+
+    @Override
+    public UserInfoResponseDto getUserInfo() {
+        User user = authenticationService.getUser();
+        return userMapper.toInfoDto(user);
+    }
+
+    @Override
+    public UserInfoResponseDto updateUserInfo(UpdateUserInfoRequestDto requestDto) {
+        User user = authenticationService.getUser();
+        user.setFirstName(requestDto.getFirstName());
+        user.setLastName(requestDto.getLastName());
+        return userMapper.toInfoDto(user);
     }
 
     private User setUserFromRequest(UserRegistrationRequestDto request) {
