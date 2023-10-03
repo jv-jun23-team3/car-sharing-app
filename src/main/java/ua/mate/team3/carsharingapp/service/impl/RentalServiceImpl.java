@@ -83,7 +83,7 @@ public class RentalServiceImpl implements RentalService {
         rental.setRentalDate(LocalDateTime.now());
         rental.setReturnDate(rentalRequestDto.getReturnDate());
         Car car = carRepository.findById(rentalRequestDto.getCarId())
-                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
         car.setInventory(car.getInventory() - 1);
         rental.setCar(carRepository.save(car));
         rental.setUser(authenticationService.getUser());
