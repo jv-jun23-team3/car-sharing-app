@@ -1,9 +1,18 @@
 package ua.mate.team3.carsharingapp.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,13 +30,6 @@ import ua.mate.team3.carsharingapp.model.Car;
 import ua.mate.team3.carsharingapp.repository.CarRepository;
 import ua.mate.team3.carsharingapp.service.impl.CarServiceImpl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 public class CarServiceTest {
     private static Car testCar;
@@ -41,8 +43,8 @@ public class CarServiceTest {
     @InjectMocks
     private CarServiceImpl carService;
 
-    @BeforeAll
-    public static void setUp() {
+    @BeforeEach
+    public void setUp() {
         testCar = new Car();
         testCar.setId(1L);
         testCar.setModel("testModel");
@@ -98,6 +100,14 @@ public class CarServiceTest {
         CarDto actual = carService.getById(1L);
         assertNotNull(actual);
         assertEquals(testCarDto, actual);
+    }
+
+    @Test
+    @DisplayName("Get car by id - Car not found")
+    public void getById_CarNotFound_ThrowEntityNotFoundException() {
+        Long nonExistentId = 10L;
+        when(carRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, () -> carService.getById(nonExistentId));
     }
 
     @Test
