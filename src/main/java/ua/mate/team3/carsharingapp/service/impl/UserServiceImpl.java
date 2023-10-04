@@ -1,6 +1,7 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
 import jakarta.transaction.Transactional;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,6 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
 
-    /**
-     *
-     */
     @Override
     public UserRegistrationResponseDto register(UserRegistrationRequestDto request)
             throws RegistrationException {
@@ -54,9 +52,9 @@ public class UserServiceImpl implements UserService {
     public void updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Can`t find user by id: " + id));
-        Set<Role> roles = user.getRoles();
-        roles.add(roleRepository.getRoleByName(requestDto.getRole()));
-        user.setRoles(roles);
+        Set<Role> newRoles = new HashSet<>();
+        newRoles.add(roleRepository.getRoleByName(requestDto.getRole()));
+        user.setRoles(newRoles);
         userRepository.save(user);
     }
 
