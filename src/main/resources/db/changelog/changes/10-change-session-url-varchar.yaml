@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: change-session-url-varchar
+      author: Arsenii Mehdalskyi
+      changes:
+        - modifyDataType:
+            tableName: payments
+            columnName: session_url
+            newDataType: varchar(512)

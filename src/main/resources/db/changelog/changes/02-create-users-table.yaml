@@ -28,7 +28,6 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
-                    unique: true
               - column:
                   name: last_name
                   type: varchar(255)
