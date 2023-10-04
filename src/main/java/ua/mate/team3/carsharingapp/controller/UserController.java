@@ -15,15 +15,14 @@ import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.service.UserService;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
-    @Operation(summary = "Update user role by ID", description = "The manager can change role of users,"
-            + " and vice versa")
+    @Operation(summary = "Update user role by ID", description = "The manager can change role "
+            + "of users,  and vice versa")
     @PutMapping("/{id}/role")
     @PreAuthorize("hasRole('MANAGER')")
     public void updateUserRole(@PathVariable Long id,
