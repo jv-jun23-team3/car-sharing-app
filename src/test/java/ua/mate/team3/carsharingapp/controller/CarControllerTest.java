@@ -32,7 +32,7 @@ import ua.mate.team3.carsharingapp.model.Car;
 
 @Sql(scripts = "classpath:database/create/add-car-data.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "classpath:database/delete/delete-cars-data.sql",
+@Sql(scripts = "classpath:database/delete/delete-data.sql",
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CarControllerTest {
