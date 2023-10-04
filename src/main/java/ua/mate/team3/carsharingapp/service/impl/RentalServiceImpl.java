@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ua.mate.team3.carsharingapp.dto.rental.CreateRentalRequestDto;
 import ua.mate.team3.carsharingapp.dto.rental.ResponseRentalDto;
@@ -88,5 +89,17 @@ public class RentalServiceImpl implements RentalService {
         rental.setCar(carRepository.save(car));
         rental.setUser(authenticationService.getUser());
         return rental;
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // This will run the method every day at midnight
+    public void handleOverdueRentals() {
+        List<Rental> overdueRentals = rentalRepository.findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
+        if (overdueRentals.isEmpty()) {
+            notificationService.sendNotification("No rentals overdue today!");
+            return;
+        }
+        for (Rental rental : overdueRentals) {
+            notificationService.sendNotification("Rental: " + rental + " is overdue");
+        }
     }
 }
