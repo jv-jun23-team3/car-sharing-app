@@ -7,5 +7,5 @@ import ua.mate.team3.carsharingapp.model.Role;
 @Data
 public class UpdateUserRoleRequestDto {
     @NotNull
-    private Role role;
+    private Role.RoleName role;
 }

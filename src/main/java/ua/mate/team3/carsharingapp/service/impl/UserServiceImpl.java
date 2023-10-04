@@ -54,8 +54,10 @@ public class UserServiceImpl implements UserService {
     public void updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Can`t find user by id: " + id));
-        user.setRoles(Set.of(requestDto.getRole()));
-        User updatedUser = userRepository.save(user);
+        Set<Role> roles = user.getRoles();
+        roles.add(roleRepository.getRoleByName(requestDto.getRole()));
+        user.setRoles(roles);
+        userRepository.save(user);
     }
 
     @Override
