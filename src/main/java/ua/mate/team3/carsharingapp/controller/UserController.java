@@ -1,6 +1,7 @@
 package ua.mate.team3.carsharingapp.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.service.UserService;
 
+@Tag(name = "User controller", description = "Endpoints for managing users")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
