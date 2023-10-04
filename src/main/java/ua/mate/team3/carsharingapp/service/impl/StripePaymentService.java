@@ -96,7 +96,7 @@ public class StripePaymentService implements PaymentService {
                 .setProduct(product.getId())
                 .build();
         Price price = Price.create(priceCreateParams);
-        SessionCreateParams sessionCreateParams = SessionCreateParams.builder()
+        return SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setPrice(price.getId())
@@ -105,7 +105,6 @@ public class StripePaymentService implements PaymentService {
                 .setSuccessUrl(SUCCESS_URL + SESSION_ID_PARAM)
                 .setCancelUrl(CANCEL_URL + SESSION_ID_PARAM)
                 .build();
-        return sessionCreateParams;
     }
 
     private BigDecimal calculateTotalPrice(LocalDateTime from, LocalDateTime to,
