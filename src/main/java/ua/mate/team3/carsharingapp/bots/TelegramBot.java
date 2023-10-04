@@ -3,7 +3,6 @@ package ua.mate.team3.carsharingapp.bots;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Getter;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -16,11 +15,8 @@ import ua.mate.team3.carsharingapp.exception.NotificationException;
 
 public class TelegramBot extends TelegramLongPollingBot {
     private static final String WELCOME_MESSAGE = ". Welcome to the Car Sharing Bot. "
-            + "With this bot, you will be able to receive notifications about the status of users' rentals.";
-    private static final String RENTAL_COMPLETED_MESSAGE =
-            ", your rental successfully completed.";
-    private static final String RENTAL_ENDED_MESSAGE =
-            ", your rental successfully closed.";
+            + "With this bot, you will be able to receive "
+            + "notifications about the status of users' rentals.";
     private static final String START_COMMAND = "/start";
     private static final String COMMAND_NOT_FOUND_MESSAGE = "Sorry, command not found";
     private final String botUserName;
@@ -64,16 +60,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void startCommandReceived(Long chatId, String name) {
         String answer = "Hi, " + name + WELCOME_MESSAGE;
-        sendMessage(chatId, answer);
-    }
-
-    private void newRentalCommandReceived(Long chatId, String name) {
-        String answer = name + RENTAL_COMPLETED_MESSAGE;
-        sendMessage(chatId, answer);
-    }
-
-    private void endRentalCommandReceived(Long chatId, String name) {
-        String answer = name + RENTAL_ENDED_MESSAGE;
         sendMessage(chatId, answer);
     }
 

@@ -33,6 +33,11 @@ public class BotConfig {
     @Value(value = "${roma.telegram.bot.name}")
     private String romaBotUserName;
 
+    @Value(value = "${oleg.telegram.token}")
+    private String olegBotToken;
+    @Value(value = "${oleg.telegram.bot.name}")
+    private String olegBotUserName;
+
     @Bean
     public TelegramBot arsenTelegramBot() {
         return new TelegramBot(arsenBotToken, arsenBotUserName);
@@ -53,6 +58,11 @@ public class BotConfig {
         return new TelegramBot(vitaliyBotToken, vitaliyBotUserName);
     }
 
+    @Bean
+    public TelegramBot olegTelegramBot() {
+        return new TelegramBot(olegBotToken, olegBotUserName);
+    }
+
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
         try {
@@ -61,6 +71,7 @@ public class BotConfig {
             telegramBotsApi.registerBot(bogdanTelegramBot());
             telegramBotsApi.registerBot(vitaliyTelegramBot());
             telegramBotsApi.registerBot(romaTelegramBot());
+            telegramBotsApi.registerBot(olegTelegramBot());
         } catch (TelegramApiException e) {
             throw new NotificationException("Can't initialize bot ", e);
         }

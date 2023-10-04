@@ -18,6 +18,7 @@ import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.RoleRepository;
 import ua.mate.team3.carsharingapp.repository.UserRepository;
 import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.UserService;
 
 @Service
@@ -28,7 +29,11 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
     private final AuthenticationService authenticationService;
+    private final NotificationService notificationService;
 
+    /**
+     *
+     */
     @Override
     public UserRegistrationResponseDto register(UserRegistrationRequestDto request)
             throws RegistrationException {
@@ -38,6 +43,9 @@ public class UserServiceImpl implements UserService {
         }
         User user = setUserFromRequest(request);
         User savedUser = userRepository.save(user);
+        notificationService.sendNotification(
+                "The user " + savedUser.getFirstName() + savedUser.getLastName()
+                        + "with email: " + savedUser.getEmail() + " has registered");
         return userMapper.toResponseDto(savedUser);
     }
 
