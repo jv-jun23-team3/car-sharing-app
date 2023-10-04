@@ -93,7 +93,8 @@ public class RentalServiceImpl implements RentalService {
 
     @Scheduled(cron = "0 0 0 * * ?") // This will run the method every day at midnight
     public void handleOverdueRentals() {
-        List<Rental> overdueRentals = rentalRepository.findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
+        List<Rental> overdueRentals = rentalRepository
+                .findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
         if (overdueRentals.isEmpty()) {
             notificationService.sendNotification("No rentals overdue today!");
             return;
