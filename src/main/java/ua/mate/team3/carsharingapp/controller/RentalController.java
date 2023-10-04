@@ -35,7 +35,7 @@ public class RentalController {
     }
 
     @Operation(summary = "Get rentals by user is and it`s status", description = "Get list of all"
-    + "user rentals and status of them by user id ")
+            + "user rentals and status of them by user id ")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping
     public List<ResponseRentalDto> getRentalsByUserIdAndIsActive(
