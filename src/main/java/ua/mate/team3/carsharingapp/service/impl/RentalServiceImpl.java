@@ -1,6 +1,5 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -30,7 +29,6 @@ public class RentalServiceImpl implements RentalService {
     private final CarRepository carRepository;
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
-    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -95,8 +93,7 @@ public class RentalServiceImpl implements RentalService {
     public void handleOverdueRentals() {
         List<Rental> overdueRentals = rentalRepository.findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
         for (Rental rental : overdueRentals) {
-            // Handle overdue rental. For example, you can set a flag in the Rental entity,
-            // send a notification to the user, etc.
+            notificationService.sendNotification("Rental: " + rental + " is overdue");
         }
     }
 }
