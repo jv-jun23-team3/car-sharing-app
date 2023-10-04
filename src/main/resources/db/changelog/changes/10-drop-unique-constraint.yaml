@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: drop-unique-constraint
-      author: Arsenii Mehdalskyi
-      changes:
-        - dropUniqueConstraint:
-            tableName: users
-            constraintName: unique_first_name
