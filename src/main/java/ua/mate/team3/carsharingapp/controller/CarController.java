@@ -37,7 +37,6 @@ public class CarController {
     }
 
     @Operation(summary = "Get all cars", description = "This endpoint is used to get all cars.")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping
     public List<CarDto> getAll(Pageable pageable) {
         return carService.findAll(pageable);
@@ -45,7 +44,6 @@ public class CarController {
 
     @Operation(summary = "Get car by ID",
             description = "This endpoint is used to get a specific car by its ID.")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/{id}")
     public CarDto findById(@PathVariable Long id) {
         return carService.getById(id);
