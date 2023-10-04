@@ -22,6 +22,7 @@ import ua.mate.team3.carsharingapp.model.Payment;
 import ua.mate.team3.carsharingapp.model.Rental;
 import ua.mate.team3.carsharingapp.repository.PaymentRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
+import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.PaymentService;
 import ua.mate.team3.carsharingapp.service.strategy.PaymentHandlerStrategy;
 
@@ -39,6 +40,7 @@ public class StripePaymentService implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final PaymentHandlerStrategy paymentHandlerStrategy;
+    private final NotificationService notificationService;
 
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
@@ -60,6 +62,8 @@ public class StripePaymentService implements PaymentService {
                 rental.getRentalDate(), rental.getReturnDate(), rental.getCar().getDailyFee());
         payment.setAmount(amount);
         paymentRepository.save(payment);
+        notificationService.sendNotification(
+                "The rental is returned and payment: " + payment + " is pending");
         return paymentMapper.toDtoFromSession(session);
     }
 
@@ -67,6 +71,8 @@ public class StripePaymentService implements PaymentService {
         Payment payment = paymentRepository.getBySessionId(sessionId);
         payment.setStatus(Payment.Status.PAID);
         paymentRepository.save(payment);
+        notificationService.sendNotification(
+                "The payment: " + payment + " is paid successfully");
         return SUCCESSFUL_PAYMENT;
     }
 
@@ -79,6 +85,8 @@ public class StripePaymentService implements PaymentService {
         Payment payment = paymentRepository.getBySessionId(sessionId);
         payment.setStatus(Payment.Status.CANCELLED);
         paymentRepository.save(payment);
+        notificationService.sendNotification(
+                "The payment: " + payment + " is paused");
         return PAYMENT_PAUSED;
     }
 

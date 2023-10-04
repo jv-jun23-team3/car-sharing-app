@@ -13,6 +13,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -41,6 +42,7 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal amount;
     @Column(name = "is_deleted")
+    @ToString.Exclude
     private boolean isDeleted;
 
     public enum Type {
