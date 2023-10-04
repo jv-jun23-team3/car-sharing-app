@@ -1,6 +1,6 @@
 package ua.mate.team3.carsharingapp.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,15 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
-import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
-import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
-import ua.mate.team3.carsharingapp.model.Car;
-import ua.mate.team3.carsharingapp.model.Payment;
-import ua.mate.team3.carsharingapp.model.Rental;
-import ua.mate.team3.carsharingapp.model.User;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
@@ -32,6 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
+import ua.mate.team3.carsharingapp.model.Payment;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PaymentControllerTest {
@@ -61,10 +57,10 @@ public class PaymentControllerTest {
     @WithMockUser(username = "email@gmail.com")
     @Sql(scripts = {
             "classpath:db/insert-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:db/delete-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     public void createPaymentSession_validDto_returnsPaymentResponseDto() {
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
@@ -82,10 +78,10 @@ public class PaymentControllerTest {
     @WithMockUser(username = "email@gmail.com")
     @Sql(scripts = {
             "classpath:db/insert-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:db/delete-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     public void getAllPayments_validUserId_returnsPaymentResponseDto() {
         MvcResult result = mockMvc.perform(get("/payments/?userId=1")
@@ -107,13 +103,14 @@ public class PaymentControllerTest {
     @WithMockUser(username = "email@gmail.com")
     @Sql(scripts = {
             "classpath:db/insert-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:db/delete-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     public void getSuccessPaymentMessage_validSessionId_returnsPaymentMessage() {
-        MvcResult result = mockMvc.perform(get("/payments/success?sessionId=cs_test_a10tdW8TopyzVkoNBU52NJl8SQb2PDKGP7pNqcc8FdwNDt1Gw8nSXnJ7V7")
+        MvcResult result = mockMvc.perform(get("/payments/success?sessionId="
+                        + "cs_test_a10tdW8TopyzVkoNBU52NJl8SQb2PDKGP7pNqcc8FdwNDt1Gw8nSXnJ7V7")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful()).andReturn();
         String actual = result.getResponse().getContentAsString();
@@ -124,18 +121,17 @@ public class PaymentControllerTest {
     @WithMockUser(username = "email@gmail.com")
     @Sql(scripts = {
             "classpath:db/insert-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
             "classpath:db/delete-payment.sql"
-    }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+            }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     public void getCancelledPaymentMessage_validSessionId_returnsPaymentMessage() {
-        MvcResult result = mockMvc.perform(get("/payments/cancel?sessionId=cs_test_a10tdW8TopyzVkoNBU52NJl8SQb2PDKGP7pNqcc8FdwNDt1Gw8nSXnJ7V7")
+        MvcResult result = mockMvc.perform(get("/payments/cancel?sessionId="
+                        + "cs_test_a10tdW8TopyzVkoNBU52NJl8SQb2PDKGP7pNqcc8FdwNDt1Gw8nSXnJ7V7")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful()).andReturn();
         String actual = result.getResponse().getContentAsString();
         assertEquals("Payment Paused", actual);
     }
-
-
 }

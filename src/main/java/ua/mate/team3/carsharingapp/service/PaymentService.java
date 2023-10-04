@@ -5,7 +5,6 @@ import java.util.List;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
-import ua.mate.team3.carsharingapp.model.Payment;
 
 public interface PaymentService {
     PaymentResponseDto createPaymentSession(PaymentRequestDto requestDto) throws StripeException;

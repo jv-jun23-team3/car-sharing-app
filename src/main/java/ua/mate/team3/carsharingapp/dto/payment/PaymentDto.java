@@ -1,8 +1,8 @@
 package ua.mate.team3.carsharingapp.dto.payment;
 
-import ua.mate.team3.carsharingapp.model.Payment;
 import java.math.BigDecimal;
 import lombok.Data;
+import ua.mate.team3.carsharingapp.model.Payment;
 
 @Data
 public class PaymentDto {

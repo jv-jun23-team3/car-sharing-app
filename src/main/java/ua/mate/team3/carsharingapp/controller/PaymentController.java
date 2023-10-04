@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
-import ua.mate.team3.carsharingapp.model.Payment;
 import ua.mate.team3.carsharingapp.service.PaymentService;
 
 @Tag(name = "Payment controller", description = "Endpoints for managing payments")
