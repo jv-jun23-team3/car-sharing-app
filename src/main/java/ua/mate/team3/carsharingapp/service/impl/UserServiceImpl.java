@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         User user = authenticationService.getUser();
         user.setFirstName(requestDto.getFirstName());
         user.setLastName(requestDto.getLastName());
-        return userMapper.toInfoDto(user);
+        return userMapper.toInfoDto(userRepository.save(user));
     }
 
     private User setUserFromRequest(UserRegistrationRequestDto request) {
