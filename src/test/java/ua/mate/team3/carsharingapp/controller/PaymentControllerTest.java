@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
 import ua.mate.team3.carsharingapp.model.Car;
@@ -35,8 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PaymentControllerTest {
     protected static MockMvc mockMvc;
-    private static Payment payment = new Payment();
-    private static Rental rental = new Rental();
+    private static PaymentDto paymentDto = new PaymentDto();
     private static PaymentRequestDto requestDto = new PaymentRequestDto();
     @Autowired
     private ObjectMapper objectMapper;
@@ -46,25 +46,15 @@ public class PaymentControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(springSecurity())
                 .build();
-        User user = new User();
-        user.setId(1L);
-        Car car = new Car();
-        car.setDailyFee(BigDecimal.TEN);
-        rental.setId(1L);
-        rental.setRentalDate(LocalDateTime.now());
-        rental.setReturnDate(LocalDateTime.now().plusDays(7));
-        rental.setActualReturnDate(null);
-        rental.setCar(car);
-        rental.setUser(user);
-        rental.setDeleted(false);
         requestDto.setType(Payment.Type.PAYMENT);
-        requestDto.setRentalId(rental.getId());
-        payment.setStatus(Payment.Status.PENDING);
-        payment.setType(Payment.Type.PAYMENT);
-        payment.setRental(rental);
-        payment.setSessionUrl("https://example.com/session");
-        payment.setSessionId("123456789");
-        payment.setAmount(new BigDecimal("100.00"));
+        requestDto.setRentalId(1L);
+        paymentDto.setId(1L);
+        paymentDto.setStatus(Payment.Status.PENDING);
+        paymentDto.setType(Payment.Type.PAYMENT);
+        paymentDto.setRentalId(1L);
+        paymentDto.setSessionUrl("https://example.com/session");
+        paymentDto.setSessionId("123456789");
+        paymentDto.setAmount(new BigDecimal("30000.0"));
     }
 
     @SneakyThrows
@@ -76,7 +66,7 @@ public class PaymentControllerTest {
             "classpath:db/delete-payment.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
-    public void createPaymentSession_validDto_returnsPaymentResponseDto(){
+    public void createPaymentSession_validDto_returnsPaymentResponseDto() {
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
         MvcResult result = mockMvc.perform(post("/payments")
                         .content(jsonRequest)
@@ -97,16 +87,20 @@ public class PaymentControllerTest {
             "classpath:db/delete-payment.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
-    public void getAllPayments_validUserId_returnsPaymentResponseDto(){
+    public void getAllPayments_validUserId_returnsPaymentResponseDto() {
         MvcResult result = mockMvc.perform(get("/payments/?userId=1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful()).andReturn();
         System.out.println(result.getResponse().getContentAsString());
         ArrayList actual = objectMapper.readValue(
                 result.getResponse().getContentAsString(), ArrayList.class);
-        List<Payment> actualDtos = objectMapper.convertValue(actual,
-                new TypeReference<List<Payment>>() {
+        List<PaymentDto> actualDtos = objectMapper.convertValue(actual,
+                new TypeReference<List<PaymentDto>>() {
                 });
+        PaymentDto actualDto = actualDtos.get(0);
+        assertEquals(paymentDto.getId(), actualDto.getId());
+        assertEquals(paymentDto.getRentalId(), actualDto.getRentalId());
+        assertEquals(paymentDto.getAmount(), actualDto.getAmount());
     }
 
     @SneakyThrows
@@ -118,7 +112,7 @@ public class PaymentControllerTest {
             "classpath:db/delete-payment.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
-    public void getSuccessPaymentMessage_validSessionId_returnsPaymentMessage(){
+    public void getSuccessPaymentMessage_validSessionId_returnsPaymentMessage() {
         MvcResult result = mockMvc.perform(get("/payments/success?sessionId=cs_test_a10tdW8TopyzVkoNBU52NJl8SQb2PDKGP7pNqcc8FdwNDt1Gw8nSXnJ7V7")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful()).andReturn();
@@ -135,7 +129,7 @@ public class PaymentControllerTest {
             "classpath:db/delete-payment.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
-    public void getCancelledPaymentMessage_validSessionId_returnsPaymentMessage(){
+    public void getCancelledPaymentMessage_validSessionId_returnsPaymentMessage() {
         MvcResult result = mockMvc.perform(get("/payments/cancel?sessionId=cs_test_a10tdW8TopyzVkoNBU52NJl8SQb2PDKGP7pNqcc8FdwNDt1Gw8nSXnJ7V7")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful()).andReturn();

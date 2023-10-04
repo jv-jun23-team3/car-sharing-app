@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.mapper.PaymentMapper;
 import ua.mate.team3.carsharingapp.model.Car;
@@ -35,6 +36,7 @@ import ua.mate.team3.carsharingapp.service.strategy.PaymentHandlerStrategy;
 public class StripePaymentServiceTest {
     private static Payment payment = new Payment();
     private static Rental rental = new Rental();
+    private static PaymentDto paymentDto = new PaymentDto();
     private static PaymentRequestDto requestDto = new PaymentRequestDto();
     @InjectMocks
     private StripePaymentService paymentService;
@@ -71,6 +73,13 @@ public class StripePaymentServiceTest {
         payment.setSessionUrl("https://example.com/session");
         payment.setSessionId("123456789");
         payment.setAmount(new BigDecimal("100.00"));
+        paymentDto.setStatus(Payment.Status.PENDING);
+        paymentDto.setType(payment.getType());
+        paymentDto.setRentalId(payment.getRental().getId());
+        paymentDto.setSessionUrl(payment.getSessionUrl());
+        paymentDto.setSessionId(payment.getSessionId());
+        paymentDto.setAmount(payment.getAmount());
+
     }
 
     @Test
@@ -86,7 +95,8 @@ public class StripePaymentServiceTest {
     @Test
     public void getAllPayments_validUserId_returnsPayments() {
         when(paymentRepository.findAllByUserId(anyLong())).thenReturn(List.of(payment));
-        assertEquals(List.of(payment), paymentService.getAllPayments(1L));
+        when(paymentMapper.toDto(any())).thenReturn(paymentDto);
+        assertEquals(List.of(paymentDto), paymentService.getAllPayments(1L));
         verify(paymentRepository).findAllByUserId(anyLong());
     }
 
