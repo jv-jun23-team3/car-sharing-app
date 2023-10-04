@@ -12,12 +12,24 @@ public class TelegramNotificationService implements NotificationService {
     private final TelegramBot bogdanTelegramBot;
     private final TelegramBot romaTelegramBot;
     private final TelegramBot vitaliyTelegramBot;
+    private final TelegramBot olegTelegramBot;
 
     @Override
     public void sendNotification(String message) {
-        arsenTelegramBot.sendMessage(arsenTelegramBot.getChatId(), message);
-        bogdanTelegramBot.sendMessage(bogdanTelegramBot.getChatId(), message);
-        romaTelegramBot.sendMessage(bogdanTelegramBot.getChatId(), message);
-        vitaliyTelegramBot.sendMessage(vitaliyTelegramBot.getChatId(), message);
+        if (arsenTelegramBot.getChatId() != null) {
+            arsenTelegramBot.sendMessage(arsenTelegramBot.getChatId(), message);
+        }
+        if (bogdanTelegramBot.getChatId() != null) {
+            bogdanTelegramBot.sendMessage(bogdanTelegramBot.getChatId(), message);
+        }
+        if (romaTelegramBot.getChatId() != null) {
+            romaTelegramBot.sendMessage(bogdanTelegramBot.getChatId(), message);
+        }
+        if (vitaliyTelegramBot.getChatId() != null) {
+            vitaliyTelegramBot.sendMessage(vitaliyTelegramBot.getChatId(), message);
+        }
+        if (olegTelegramBot.getChatId() != null) {
+            olegTelegramBot.sendMessage(olegTelegramBot.getChatId(), message);
+        }
     }
 }
