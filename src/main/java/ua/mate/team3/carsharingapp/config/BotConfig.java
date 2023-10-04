@@ -1,5 +1,6 @@
 package ua.mate.team3.carsharingapp.config;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,8 @@ import ua.mate.team3.carsharingapp.exception.NotificationException;
 
 @Configuration
 public class BotConfig {
+    Dotenv dotenv = Dotenv.configure().load();
+
     @Value(value = "${arsen.telegram.token}")
     private String arsenBotToken;
     @Value(value = "${arsen.telegram.bot.name}")
@@ -32,6 +35,11 @@ public class BotConfig {
     private String romaBotToken;
     @Value(value = "${roma.telegram.bot.name}")
     private String romaBotUserName;
+
+    @Value(value = "${oleg.telegram.token}")
+    private String olegBotToken;
+    @Value(value = "${oleg.telegram.bot.name}")
+    private String olegBotUserName;
 
     @Bean
     public TelegramBot arsenTelegramBot() {
@@ -53,6 +61,11 @@ public class BotConfig {
         return new TelegramBot(vitaliyBotToken, vitaliyBotUserName);
     }
 
+    @Bean
+    public TelegramBot olegTelegramBot() {
+        return new TelegramBot(olegBotToken, olegBotUserName);
+    }
+
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
         try {
@@ -61,6 +74,7 @@ public class BotConfig {
             telegramBotsApi.registerBot(bogdanTelegramBot());
             telegramBotsApi.registerBot(vitaliyTelegramBot());
             telegramBotsApi.registerBot(romaTelegramBot());
+            telegramBotsApi.registerBot(olegTelegramBot());
         } catch (TelegramApiException e) {
             throw new NotificationException("Can't initialize bot ", e);
         }

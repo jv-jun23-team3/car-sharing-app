@@ -16,4 +16,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             + "AND ((r.actualReturnDate IS NULL AND :isActive = true) "
             + "OR (r.actualReturnDate IS NOT NULL AND :isActive = false))")
     List<Rental> findByUserIdAndIsActive(Long userId, Boolean isActive, Pageable pageable);
+
+    List<Rental> findAllByActualReturnDateIsNullAndReturnDateBefore();
 }
