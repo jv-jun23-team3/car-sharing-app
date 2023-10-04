@@ -33,7 +33,9 @@ public class RentalController {
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping
     public List<ResponseRentalDto> getRentalsByUserIdAndIsActive(
-            @RequestParam Long userId, @RequestParam Boolean isActive, Pageable pageable) {
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Boolean isActive,
+            Pageable pageable) {
         return rentalService.getAllRentalsByUserIdAndState(userId, isActive, pageable);
     }
 
