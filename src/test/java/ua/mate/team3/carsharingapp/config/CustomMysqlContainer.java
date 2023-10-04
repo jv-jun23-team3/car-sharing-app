@@ -3,7 +3,7 @@ package ua.mate.team3.carsharingapp.config;
 import org.testcontainers.containers.MySQLContainer;
 
 public class CustomMysqlContainer extends MySQLContainer<CustomMysqlContainer> {
-    private static final String DB_IMAGE = "mysql:8";
+    private static final String DB_IMAGE = "mysql:latest";
     private static final String DB_URL = "TEST_DB_URL";
     private static final String DB_USERNAME = "TEST_DB_USERNAME";
     private static final String DB_PASSWORD = "TEST_DB_PASSWORD";

@@ -13,6 +13,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -33,7 +34,7 @@ public class Payment {
     private Type type;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rental_id", nullable = false)
-    private Rental rentalId;
+    private Rental rental;
     @Column(name = "session_url", nullable = false)
     private String sessionUrl;
     @Column(name = "session_id", nullable = false)
@@ -41,6 +42,7 @@ public class Payment {
     @Column(nullable = false)
     private BigDecimal amount;
     @Column(name = "is_deleted")
+    @ToString.Exclude
     private boolean isDeleted;
 
     public enum Type {
@@ -48,6 +50,6 @@ public class Payment {
     }
 
     public enum Status {
-        PENDING, PAID
+        PENDING, PAID, CANCELLED
     }
 }
