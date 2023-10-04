@@ -10,6 +10,7 @@ import com.stripe.param.ProductCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,18 +23,22 @@ import ua.mate.team3.carsharingapp.model.Rental;
 import ua.mate.team3.carsharingapp.repository.PaymentRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
 import ua.mate.team3.carsharingapp.service.PaymentService;
+import ua.mate.team3.carsharingapp.service.strategy.PaymentHandlerStrategy;
 
 @RequiredArgsConstructor
 @Service
 public class StripePaymentService implements PaymentService {
     public static final String PAYMENT_PAUSED = "Payment Paused";
     public static final String CURRENCY = "usd";
-    public static final String SUCCESS_URL = "http://localhost:8080/payments/success?sessionId=";
+    public static final String SUCCESS_URL = "http://localhost:8080/payments/success";
     public static final String CANCEL_URL = "http://localhost:8080/payments/cancel";
+    public static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
+    public static final String SUCCESSFUL_PAYMENT = "Payment was successful";
 
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final PaymentHandlerStrategy paymentHandlerStrategy;
 
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
@@ -44,30 +49,25 @@ public class StripePaymentService implements PaymentService {
         Rental rental = rentalRepository.findById(requestDto.getRentalId())
                 .orElseThrow(() -> new EntityNotFoundException("can't find rental with id: "
                         + requestDto.getRentalId()));
-        SessionCreateParams sessionCreateParams = buildSessionParams(rental);
-        Session session = Session.create(sessionCreateParams);
+        Session session = Session.create(buildSessionParams(rental, requestDto));
         Payment payment = new Payment();
         payment.setStatus(Payment.Status.PENDING);
-        payment.setType(Payment.Type.PAYMENT);
+        payment.setType(requestDto.getType());
         payment.setRental(rental);
         payment.setSessionUrl(session.getUrl());
         payment.setSessionId(session.getId());
-        payment.setAmount(BigDecimal.valueOf(session.getAmountTotal()));
-
+        BigDecimal amount = paymentHandlerStrategy.getHandler(requestDto.getType()).handlePayment(
+                rental.getRentalDate(), rental.getReturnDate(), rental.getCar().getDailyFee());
+        payment.setAmount(amount);
         paymentRepository.save(payment);
         return paymentMapper.toDtoFromSession(session);
     }
 
-    public List<PaymentResponseDto> getSuccessfulPayments(String sessionId)
-            throws StripeException {
-        Session session = Session.retrieve(sessionId);
+    public String getSuccessfulPaymentMessage(String sessionId) {
         Payment payment = paymentRepository.getBySessionId(sessionId);
         payment.setStatus(Payment.Status.PAID);
         paymentRepository.save(payment);
-        return paymentRepository.findAllByStatus(Payment.Status.PAID)
-                .stream()
-                .map(paymentMapper::toDto)
-                .toList();
+        return SUCCESSFUL_PAYMENT;
     }
 
     public List<Payment> getAllPayments(Long id) {
@@ -75,20 +75,23 @@ public class StripePaymentService implements PaymentService {
     }
 
     @Override
-    public String getCanceledPayment(String sessionId) throws StripeException {
-        Session session = Session.retrieve(sessionId);
-        session.expire();
+    public String getCanceledPaymentMessage(String sessionId) {
+        Payment payment = paymentRepository.getBySessionId(sessionId);
+        payment.setStatus(Payment.Status.CANCELLED);
+        paymentRepository.save(payment);
         return PAYMENT_PAUSED;
     }
 
-    private SessionCreateParams buildSessionParams(Rental rental) throws StripeException {
+    private SessionCreateParams buildSessionParams(Rental rental, PaymentRequestDto requestDto)
+            throws StripeException {
         ProductCreateParams productParams = new ProductCreateParams.Builder()
                 .setName(rental.getCar().getModel())
                 .build();
         Product product = Product.create(productParams);
         PriceCreateParams priceCreateParams = PriceCreateParams.builder()
-                .setUnitAmountDecimal(rental.getCar().getDailyFee()
-                        .multiply(BigDecimal.valueOf(100)))
+                .setUnitAmountDecimal(calculateTotalPrice(rental.getRentalDate(),
+                        rental.getActualReturnDate(),
+                        rental.getCar().getDailyFee(), requestDto.getType()))
                 .setCurrency(CURRENCY)
                 .setProduct(product.getId())
                 .build();
@@ -99,10 +102,15 @@ public class StripePaymentService implements PaymentService {
                         .setPrice(price.getId())
                         .setQuantity(1L)
                         .build())
-                .setSuccessUrl(SUCCESS_URL)
-                .setCancelUrl(CANCEL_URL)
+                .setSuccessUrl(SUCCESS_URL + SESSION_ID_PARAM)
+                .setCancelUrl(CANCEL_URL + SESSION_ID_PARAM)
                 .build();
         return sessionCreateParams;
+    }
+
+    private BigDecimal calculateTotalPrice(LocalDateTime from, LocalDateTime to,
+                                           BigDecimal pricePerDay, Payment.Type type) {
+        return paymentHandlerStrategy.getHandler(type).handlePayment(from, to, pricePerDay);
     }
 
 }

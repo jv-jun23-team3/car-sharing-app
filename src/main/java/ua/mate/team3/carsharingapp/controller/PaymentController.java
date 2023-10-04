@@ -27,15 +27,13 @@ public class PaymentController {
     }
 
     @GetMapping("/success")
-    public List<PaymentResponseDto> getSuccessPayments(@RequestParam String sessionId)
-            throws StripeException {
-        return stripePaymentService.getSuccessfulPayments(sessionId);
+    public String getSuccessPaymentMessage(@RequestParam String sessionId) {
+        return stripePaymentService.getSuccessfulPaymentMessage(sessionId);
     }
 
     @GetMapping("/cancel")
-    public String getCancelledPayment(@RequestParam String sessionId)
-            throws StripeException {
-        return stripePaymentService.getCanceledPayment(sessionId);
+    public String getCancelledPaymentMessage(@RequestParam String sessionId) {
+        return stripePaymentService.getCanceledPaymentMessage(sessionId);
     }
 
     @GetMapping("/")
