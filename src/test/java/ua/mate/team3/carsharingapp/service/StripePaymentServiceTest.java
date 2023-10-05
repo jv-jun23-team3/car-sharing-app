@@ -66,7 +66,6 @@ public class StripePaymentServiceTest {
         rental.setDeleted(false);
         requestDto.setType(Payment.Type.PAYMENT);
         requestDto.setRentalId(rental.getId());
-
         payment.setStatus(Payment.Status.PENDING);
         payment.setType(Payment.Type.PAYMENT);
         payment.setRental(rental);

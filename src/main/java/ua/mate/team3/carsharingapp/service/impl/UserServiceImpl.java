@@ -26,11 +26,6 @@ import ua.mate.team3.carsharingapp.service.UserService;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final String USER_INFO_TEMPLATE = "The user😄:"
-            + "\n🙋‍ **User ID:** %d"
-            + "\n📧 **User email:** %s"
-            + "\n🥇 **First name:** %s"
-            + "\n🥈 **Last name:** %s";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -48,7 +43,8 @@ public class UserServiceImpl implements UserService {
         User user = setUserFromRequest(request);
         User savedUser = userRepository.save(user);
         notificationService.sendNotification(
-                 formMessage(savedUser) + " has registered");
+                "The user " + savedUser.getFirstName() + savedUser.getLastName()
+                        + "with email: " + savedUser.getEmail() + " has registered");
         return userMapper.toResponseDto(savedUser);
     }
 
@@ -75,14 +71,6 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(requestDto.getFirstName());
         user.setLastName(requestDto.getLastName());
         return userMapper.toInfoDto(userRepository.save(user));
-    }
-
-    private String formMessage(User user) {
-        return String.format(USER_INFO_TEMPLATE,
-                user.getId(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName());
     }
 
     private User setUserFromRequest(UserRegistrationRequestDto request) {

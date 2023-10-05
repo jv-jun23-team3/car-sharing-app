@@ -45,11 +45,6 @@ public class StripePaymentService implements PaymentService {
     private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
     private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
     private static final Long FROM_CENTS_TO_DOLLARS = 100L;
-    private static final String PAYMENT_INFO_TEMPLATE = "The payment🤑:"
-            + "\n📋 **Payment ID:** %d"
-            + "\n📊 **Payment status:** %s"
-            + "\n🏎️ **Payment's rental ID:** %d"
-            + "\n💰 **Amount:** %s";
 
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
@@ -71,18 +66,18 @@ public class StripePaymentService implements PaymentService {
         BigDecimal amount = paymentHandlerStrategy.getHandler(requestDto.getType()).handlePayment(
                 rental.getRentalDate(), rental.getReturnDate(), rental.getCar().getDailyFee());
         payment.setAmount(amount.divide(BigDecimal.valueOf(FROM_CENTS_TO_DOLLARS)));
-        Payment savedPayment = paymentRepository.save(payment);
+        paymentRepository.save(payment);
         notificationService.sendNotification(
-                formMessage(savedPayment) + " is pending😉");
+                "The rental is returned and payment with id: " + payment.getId() + " is pending");
         return paymentMapper.toDtoFromSession(session);
     }
 
     public String getSuccessfulPaymentMessage(String sessionId) {
         Payment payment = paymentRepository.getBySessionId(sessionId);
         payment.setStatus(Payment.Status.PAID);
-        Payment savedPayment = paymentRepository.save(payment);
+        paymentRepository.save(payment);
         notificationService.sendNotification(
-                formMessage(savedPayment) + " is paid successfully✅");
+                "The payment with id: " + payment.getId() + " is paid successfully");
         return SUCCESSFUL_PAYMENT;
     }
 
@@ -107,9 +102,9 @@ public class StripePaymentService implements PaymentService {
     public String getCanceledPaymentMessage(String sessionId) {
         Payment payment = paymentRepository.getBySessionId(sessionId);
         payment.setStatus(Payment.Status.CANCELLED);
-        Payment savedPayment = paymentRepository.save(payment);
+        paymentRepository.save(payment);
         notificationService.sendNotification(
-                formMessage(savedPayment) + " is paused🛑");
+                "The payment with id: " + payment.getId() + " is paused");
         return PAYMENT_PAUSED;
     }
 
@@ -166,16 +161,9 @@ public class StripePaymentService implements PaymentService {
         }
     }
 
-    private String formMessage(Payment payment) {
-        return String.format(PAYMENT_INFO_TEMPLATE,
-                payment.getId(),
-                payment.getStatus().name(),
-                payment.getRental().getId(),
-                payment.getAmount());
-    }
-
     private BigDecimal calculateTotalPrice(LocalDateTime from, LocalDateTime to,
                                            BigDecimal pricePerDay, Payment.Type type) {
         return paymentHandlerStrategy.getHandler(type).handlePayment(from, to, pricePerDay);
     }
+
 }
