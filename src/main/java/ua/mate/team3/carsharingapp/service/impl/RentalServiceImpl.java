@@ -1,6 +1,5 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -34,17 +33,17 @@ public class RentalServiceImpl implements RentalService {
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
     private final PaymentRepository paymentRepository;
-    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
     public ResponseRentalDto save(CreateRentalRequestDto requestDto) {
         if (paymentRepository.findByStatusAndByUserId(
                 authenticationService.getUserId(), Payment.Status.PENDING).isPresent()) {
-            throw new ActionForbiddenException("You can't rent new car with ongoing pending payment");
+            throw new ActionForbiddenException(
+                    "You can't rent new car with ongoing pending payment");
         }
-        ResponseRentalDto responseDto =
-                rentalMapper.toResponseDto(rentalRepository.save(createRental(requestDto)));
+        ResponseRentalDto responseDto = rentalMapper.toResponseDto(
+                rentalRepository.save(createRental(requestDto)));
         notificationService.sendNotification(
                 "New rental " + responseDto + " is created successfully");
         return responseDto;
