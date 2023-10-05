@@ -51,5 +51,6 @@ public class Rental {
     private User user;
 
     @Column(name = "is_deleted", nullable = false)
+    @ToString.Exclude
     private boolean isDeleted;
 }
