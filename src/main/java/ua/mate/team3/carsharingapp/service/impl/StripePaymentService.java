@@ -11,15 +11,23 @@ import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
 import ua.mate.team3.carsharingapp.mapper.PaymentMapper;
 import ua.mate.team3.carsharingapp.model.Payment;
 import ua.mate.team3.carsharingapp.model.Rental;
+import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.PaymentRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
 import ua.mate.team3.carsharingapp.service.NotificationService;
@@ -29,12 +37,14 @@ import ua.mate.team3.carsharingapp.service.strategy.PaymentHandlerStrategy;
 @RequiredArgsConstructor
 @Service
 public class StripePaymentService implements PaymentService {
-    public static final String PAYMENT_PAUSED = "Payment Paused";
-    public static final String CURRENCY = "usd";
-    public static final String SUCCESS_URL = "http://localhost:8080/payments/success";
-    public static final String CANCEL_URL = "http://localhost:8080/payments/cancel";
-    public static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
-    public static final String SUCCESSFUL_PAYMENT = "Payment was successful";
+    private static final String ROLE_MANAGER = "ROLE_MANAGER";
+    private static final String PAYMENT_PAUSED = "Payment Paused";
+    private static final String CURRENCY = "usd";
+    private static final String SUCCESS_URL = "http://localhost:8088/payments/success";
+    private static final String CANCEL_URL = "http://localhost:8088/payments/cancel";
+    private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
+    private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
+    private static final Long FROM_CENTS_TO_DOLLARS = 100L;
 
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
@@ -52,18 +62,13 @@ public class StripePaymentService implements PaymentService {
                 .orElseThrow(() -> new EntityNotFoundException("can't find rental with id: "
                         + requestDto.getRentalId()));
         Session session = Session.create(buildSessionParams(rental, requestDto));
-        Payment payment = new Payment();
-        payment.setStatus(Payment.Status.PENDING);
-        payment.setType(requestDto.getType());
-        payment.setRental(rental);
-        payment.setSessionUrl(session.getUrl());
-        payment.setSessionId(session.getId());
+        Payment payment = getPayment(requestDto, rental, session);
         BigDecimal amount = paymentHandlerStrategy.getHandler(requestDto.getType()).handlePayment(
                 rental.getRentalDate(), rental.getReturnDate(), rental.getCar().getDailyFee());
-        payment.setAmount(amount);
+        payment.setAmount(amount.divide(BigDecimal.valueOf(FROM_CENTS_TO_DOLLARS)));
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The rental is returned and payment: " + payment + " is pending");
+                "The rental is returned and payment with id: " + payment.getId() + " is pending");
         return paymentMapper.toDtoFromSession(session);
     }
 
@@ -72,12 +77,25 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.PAID);
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The payment: " + payment + " is paid successfully");
+                "The payment with id: " + payment.getId() + " is paid successfully");
         return SUCCESSFUL_PAYMENT;
     }
 
-    public List<Payment> getAllPayments(Long id) {
-        return paymentRepository.findAllByUserId(id);
+    public List<PaymentDto> getAllPayments(Long id, Authentication authentication) {
+        if (id == null) {
+            GrantedAuthority grantedAuthority = getGrantedAuthority(authentication);
+            if (grantedAuthority.getAuthority().equals(ROLE_MANAGER)) {
+                return paymentRepository.findAll().stream()
+                        .map(paymentMapper::toDto)
+                        .toList();
+            }
+            throw new AccessDeniedException("Only Manager can get all payments");
+        } else {
+            checkValidIdIfNotManager(id, authentication);
+            return paymentRepository.findAllByUserId(id).stream()
+                    .map(paymentMapper::toDto)
+                    .toList();
+        }
     }
 
     @Override
@@ -86,7 +104,7 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.CANCELLED);
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The payment: " + payment + " is paused");
+                "The payment with id: " + payment.getId() + " is paused");
         return PAYMENT_PAUSED;
     }
 
@@ -113,6 +131,34 @@ public class StripePaymentService implements PaymentService {
                 .setSuccessUrl(SUCCESS_URL + SESSION_ID_PARAM)
                 .setCancelUrl(CANCEL_URL + SESSION_ID_PARAM)
                 .build();
+    }
+
+    private Payment getPayment(PaymentRequestDto requestDto, Rental rental, Session session) {
+        Payment payment = new Payment();
+        payment.setStatus(Payment.Status.PENDING);
+        payment.setType(requestDto.getType());
+        payment.setRental(rental);
+        payment.setSessionUrl(session.getUrl());
+        payment.setSessionId(session.getId());
+        return payment;
+    }
+
+    private GrantedAuthority getGrantedAuthority(Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        GrantedAuthority grantedAuthority = authorities.stream().findFirst().orElseThrow(
+                () -> new NoSuchElementException("Can't find role"));
+        return grantedAuthority;
+    }
+
+    private void checkValidIdIfNotManager(Long userId, Authentication authentication) {
+        GrantedAuthority grantedAuthority = getGrantedAuthority(authentication);
+        if (grantedAuthority.getAuthority().equals(ROLE_MANAGER)) {
+            return;
+        }
+        User user = (User) authentication.getPrincipal();
+        if (!Objects.equals(user.getId(), userId)) {
+            throw new AccessDeniedException("Only Manager can get other user information");
+        }
     }
 
     private BigDecimal calculateTotalPrice(LocalDateTime from, LocalDateTime to,

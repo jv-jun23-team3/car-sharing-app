@@ -5,15 +5,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
-import ua.mate.team3.carsharingapp.model.Payment;
 import ua.mate.team3.carsharingapp.service.PaymentService;
 
 @Tag(name = "Payment controller", description = "Endpoints for managing payments")
@@ -21,6 +22,7 @@ import ua.mate.team3.carsharingapp.service.PaymentService;
 @RequiredArgsConstructor
 @RequestMapping("/payments")
 public class PaymentController {
+
     private final PaymentService stripePaymentService;
 
     @Operation(summary = "Create new payment session", description = "Create new payment session")
@@ -46,7 +48,8 @@ public class PaymentController {
 
     @Operation(summary = "get all payments by user id", description = "Create new payment session")
     @GetMapping("/")
-    public List<Payment> getAllPayments(@RequestParam Long userId) {
-        return stripePaymentService.getAllPayments(userId);
+    public List<PaymentDto> getAllPayments(@RequestParam(required = false) Long userId,
+                                           Authentication authentication) {
+        return stripePaymentService.getAllPayments(userId, authentication);
     }
 }

@@ -1,5 +1,6 @@
 package ua.mate.team3.carsharingapp.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,22 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         return createResponseEntityFromExceptionErrors(
                 new String[]{e.getMessage()}, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ActionForbiddenException.class)
+    protected ResponseEntity<Object> handleActionForbiddenException(
+            ActionForbiddenException e
+    ) {
+        return createResponseEntityFromExceptionErrors(
+                new String[]{e.getMessage()}, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EmptyInventoryException.class)
+    protected ResponseEntity<Object> handleEmptyInventoryException(
+            EmptyInventoryException e
+    ) {
+        return createResponseEntityFromExceptionErrors(
+                new String[]{e.getMessage()}, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotificationException.class)
