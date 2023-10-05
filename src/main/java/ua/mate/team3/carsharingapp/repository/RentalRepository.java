@@ -20,6 +20,12 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
     @Query("FROM Rental r "
             + "LEFT JOIN FETCH r.car "
+            + "WHERE (:isActive IS NULL OR (r.actualReturnDate IS NULL AND :isActive = true) "
+            + "OR (r.actualReturnDate IS NOT NULL AND :isActive = false))")
+    List<Rental> findByIsActive(Boolean isActive, Pageable pageable);
+
+    @Query("FROM Rental r "
+            + "LEFT JOIN FETCH r.car "
             + "LEFT JOIN FETCH r.user "
             + "WHERE ((r.actualReturnDate IS NULL AND r.returnDate < :currentDate) "
             + "OR (r.actualReturnDate IS NOT NULL AND r.actualReturnDate > r.returnDate))")
