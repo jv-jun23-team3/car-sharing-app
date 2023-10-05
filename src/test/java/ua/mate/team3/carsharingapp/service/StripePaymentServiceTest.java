@@ -2,10 +2,7 @@ package ua.mate.team3.carsharingapp.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +38,6 @@ public class StripePaymentServiceTest {
     private StripePaymentService paymentService;
     @Mock
     private RentalRepository rentalRepository;
-
     @Mock
     private PaymentRepository paymentRepository;
     @Mock
