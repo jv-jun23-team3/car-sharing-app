@@ -45,14 +45,11 @@ public class StripePaymentService implements PaymentService {
     private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
     private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
     private static final Long FROM_CENTS_TO_DOLLARS = 100L;
-    private static final String PAYMENT_INFO_TEMPLATE = """
-            The payment🤑:
-                        
-            📋 **Payment ID:** %d
-            📊 **Payment status:** %s
-            🏎️ **Payment's rental ID:** %d
-            💰 **Amount:** %s
-            """;
+    private static final String PAYMENT_INFO_TEMPLATE = "The payment🤑:"
+            + "\n📋 **Payment ID:** %d"
+            + "\n📊 **Payment status:** %s"
+            + "\n🏎️ **Payment's rental ID:** %d"
+            + "\n💰 **Amount:** %s";
 
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
@@ -76,7 +73,7 @@ public class StripePaymentService implements PaymentService {
         payment.setAmount(amount.divide(BigDecimal.valueOf(FROM_CENTS_TO_DOLLARS)));
         Payment savedPayment = paymentRepository.save(payment);
         notificationService.sendNotification(
-                formMessage(savedPayment) + " is pending\uD83D\uDE09");
+                formMessage(savedPayment) + " is pending😉");
         return paymentMapper.toDtoFromSession(session);
     }
 
@@ -112,7 +109,7 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.CANCELLED);
         Payment savedPayment = paymentRepository.save(payment);
         notificationService.sendNotification(
-                formMessage(savedPayment) + " is paused\uD83D\uDED1");
+                formMessage(savedPayment) + " is paused🛑");
         return PAYMENT_PAUSED;
     }
 

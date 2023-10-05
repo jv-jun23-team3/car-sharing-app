@@ -26,14 +26,11 @@ import ua.mate.team3.carsharingapp.service.UserService;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final String USER_INFO_TEMPLATE = """
-            The user😄:
-                        
-            🙋‍ **User ID:** %d
-            📧 **User email:** %s
-            🥇 **First name:** %s
-            🥈 **Last name:** %s
-            """;
+    private static final String USER_INFO_TEMPLATE = "The user😄:"
+            + "\n🙋‍ **User ID:** %d"
+            + "\n📧 **User email:** %s"
+            + "\n🥇 **First name:** %s"
+            + "\n🥈 **Last name:** %s";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
