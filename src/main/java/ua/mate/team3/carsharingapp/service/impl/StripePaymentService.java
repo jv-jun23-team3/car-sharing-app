@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
 import ua.mate.team3.carsharingapp.mapper.PaymentMapper;
@@ -76,8 +77,10 @@ public class StripePaymentService implements PaymentService {
         return SUCCESSFUL_PAYMENT;
     }
 
-    public List<Payment> getAllPayments(Long id) {
-        return paymentRepository.findAllByUserId(id);
+    public List<PaymentDto> getAllPayments(Long id) {
+        return paymentRepository.findAllByUserId(id).stream()
+                .map(paymentMapper::toDto)
+                .toList();
     }
 
     @Override

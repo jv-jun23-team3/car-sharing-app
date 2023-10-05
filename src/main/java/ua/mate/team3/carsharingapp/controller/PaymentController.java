@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentRequestDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
-import ua.mate.team3.carsharingapp.model.Payment;
 import ua.mate.team3.carsharingapp.service.PaymentService;
 
 @Tag(name = "Payment controller", description = "Endpoints for managing payments")
@@ -46,7 +46,7 @@ public class PaymentController {
 
     @Operation(summary = "get all payments by user id", description = "Create new payment session")
     @GetMapping("/")
-    public List<Payment> getAllPayments(@RequestParam Long userId) {
+    public List<PaymentDto> getAllPayments(@RequestParam Long userId) {
         return stripePaymentService.getAllPayments(userId);
     }
 }
