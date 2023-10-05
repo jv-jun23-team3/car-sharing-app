@@ -4,6 +4,7 @@ import com.stripe.model.checkout.Session;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ua.mate.team3.carsharingapp.config.MapperConfig;
+import ua.mate.team3.carsharingapp.dto.payment.PaymentDto;
 import ua.mate.team3.carsharingapp.dto.payment.PaymentResponseDto;
 import ua.mate.team3.carsharingapp.model.Payment;
 
@@ -13,5 +14,6 @@ public interface PaymentMapper {
     @Mapping(target = "sessionUrl", source = "url")
     PaymentResponseDto toDtoFromSession(Session session);
 
-    PaymentResponseDto toDto(Payment payment);
+    @Mapping(target = "rentalId", source = "rental.id")
+    PaymentDto toDto(Payment payment);
 }
