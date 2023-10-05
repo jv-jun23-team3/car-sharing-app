@@ -13,10 +13,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ua.mate.team3.carsharingapp.dto.rental.CreateRentalRequestDto;
 import ua.mate.team3.carsharingapp.dto.rental.ResponseRentalDto;
+import ua.mate.team3.carsharingapp.exception.ActionForbiddenException;
 import ua.mate.team3.carsharingapp.mapper.RentalMapper;
 import ua.mate.team3.carsharingapp.model.Car;
+import ua.mate.team3.carsharingapp.model.Payment;
 import ua.mate.team3.carsharingapp.model.Rental;
 import ua.mate.team3.carsharingapp.repository.CarRepository;
+import ua.mate.team3.carsharingapp.repository.PaymentRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
 import ua.mate.team3.carsharingapp.security.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.NotificationService;
@@ -30,11 +33,16 @@ public class RentalServiceImpl implements RentalService {
     private final CarRepository carRepository;
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
+    private final PaymentRepository paymentRepository;
     private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
     public ResponseRentalDto save(CreateRentalRequestDto requestDto) {
+        if (paymentRepository.findByStatusAndByUserId(
+                authenticationService.getUserId(), Payment.Status.PENDING).isPresent()) {
+            throw new ActionForbiddenException("You can't rent new car with ongoing pending payment");
+        }
         ResponseRentalDto responseDto =
                 rentalMapper.toResponseDto(rentalRepository.save(createRental(requestDto)));
         notificationService.sendNotification(
