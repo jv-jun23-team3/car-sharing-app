@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginResponseDto;
 import ua.mate.team3.carsharingapp.model.User;
-import ua.mate.team3.carsharingapp.service.AuthenticationService;
 import ua.mate.team3.carsharingapp.security.JwtUtil;
+import ua.mate.team3.carsharingapp.service.AuthenticationService;
 
 @Service
 @RequiredArgsConstructor
