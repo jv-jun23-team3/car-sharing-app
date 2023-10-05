@@ -6,12 +6,13 @@ import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserInfoRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.exception.RegistrationException;
+import ua.mate.team3.carsharingapp.model.User;
 
 public interface UserService {
     UserRegistrationResponseDto register(UserRegistrationRequestDto requestDto)
             throws RegistrationException;
 
-    void updateUserRole(Long id, UpdateUserRoleRequestDto requestDto);
+    User updateUserRole(Long id, UpdateUserRoleRequestDto requestDto);
 
     UserInfoResponseDto getUserInfo();
 

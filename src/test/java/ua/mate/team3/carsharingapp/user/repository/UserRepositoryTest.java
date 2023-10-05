@@ -1,7 +1,9 @@
 package ua.mate.team3.carsharingapp.user.repository;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static ua.mate.team3.carsharingapp.config.SqlFilePaths.USER_ROLE_DELETE;
+import static ua.mate.team3.carsharingapp.config.SqlFilePaths.USER_ROLE_INSERT;
 
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
+import ua.mate.team3.carsharingapp.exception.EntityNotFoundException;
 import ua.mate.team3.carsharingapp.model.Role;
 import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.UserRepository;

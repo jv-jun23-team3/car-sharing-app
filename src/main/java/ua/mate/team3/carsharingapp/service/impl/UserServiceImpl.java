@@ -31,9 +31,6 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
 
-    /**
-     *
-     */
     @Override
     public UserRegistrationResponseDto register(UserRegistrationRequestDto request)
             throws RegistrationException {
@@ -51,11 +48,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
+    public User updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Can`t find user by id: " + id));
         user.setRoles(Set.of(requestDto.getRole()));
-        User updatedUser = userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
