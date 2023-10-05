@@ -40,8 +40,8 @@ public class StripePaymentService implements PaymentService {
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
     private static final String PAYMENT_PAUSED = "Payment Paused";
     private static final String CURRENCY = "usd";
-    private static final String SUCCESS_URL = "http://localhost:8080/payments/success";
-    private static final String CANCEL_URL = "http://localhost:8080/payments/cancel";
+    private static final String SUCCESS_URL = "http://localhost:8088/payments/success";
+    private static final String CANCEL_URL = "http://localhost:8088/payments/cancel";
     private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
     private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
 
@@ -64,10 +64,10 @@ public class StripePaymentService implements PaymentService {
         Payment payment = getPayment(requestDto, rental, session);
         BigDecimal amount = paymentHandlerStrategy.getHandler(requestDto.getType()).handlePayment(
                 rental.getRentalDate(), rental.getReturnDate(), rental.getCar().getDailyFee());
-        payment.setAmount(amount);
+        payment.setAmount(amount.divide(BigDecimal.valueOf(FROM_CENTS_TO_DOLLARS)));
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The rental is returned and payment: " + payment + " is pending");
+                "The rental is returned and payment with id: " + payment.getId() + " is pending");
         return paymentMapper.toDtoFromSession(session);
     }
 
@@ -76,7 +76,7 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.PAID);
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The payment: " + payment + " is paid successfully");
+                "The payment with id: " + payment.getId() + " is paid successfully");
         return SUCCESSFUL_PAYMENT;
     }
 
@@ -103,7 +103,7 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.CANCELLED);
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The payment: " + payment + " is paused");
+                "The payment with id: " + payment.getId() + " is paused");
         return PAYMENT_PAUSED;
     }
 
