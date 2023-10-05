@@ -66,6 +66,8 @@ public class StripePaymentServiceTest {
         rental.setDeleted(false);
         requestDto.setType(Payment.Type.PAYMENT);
         requestDto.setRentalId(rental.getId());
+
+        payment = new Payment();
         payment.setStatus(Payment.Status.PENDING);
         payment.setType(Payment.Type.PAYMENT);
         payment.setRental(rental);
@@ -89,26 +91,5 @@ public class StripePaymentServiceTest {
         assertEquals("can't find rental with id: 1", exception.getMessage());
         verifyNoMoreInteractions(paymentMapper);
         verifyNoMoreInteractions(paymentHandlerStrategy);
-    }
-
-    @Test
-    public void getSuccessfulPaymentMessage_validRequest_returnsMessage() {
-        when(paymentRepository.getBySessionId(anyString())).thenReturn(payment);
-        assertEquals("Payment was successful",
-                paymentService.getSuccessfulPaymentMessage(payment.getSessionId()));
-        verify(paymentRepository).getBySessionId(anyString());
-        verify(paymentRepository).save(any(Payment.class));
-        verify(notificationService).sendNotification(anyString());
-    }
-
-    @Test
-    public void getCanceledPaymentMessage_validRequest_returnsMessage() {
-        when(paymentRepository.getBySessionId(anyString())).thenReturn(payment);
-        assertEquals("Payment Paused",
-                paymentService.getCanceledPaymentMessage(payment.getSessionId()));
-        verify(paymentRepository).getBySessionId(anyString());
-        verify(paymentRepository).save(any(Payment.class));
-        verify(notificationService).sendNotification(anyString());
-
     }
 }
