@@ -35,12 +35,15 @@ import ua.mate.team3.carsharingapp.service.RentalService;
 @RequiredArgsConstructor
 public class RentalServiceImpl implements RentalService {
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
-    private static final String RENTAL_INFO_TEMPLATE = "The rental: "
-            + "\n📋 **Rental ID:** %d"
-            + "\n🚘 **Car ID:** %d"
-            + "\n📆 **Rental Date:** %s"
-            + "\n🙆 **User ID:** %d"
-            + "\n🫵🔙 **Expected Return Date:** %s";
+    private static final String RENTAL_INFO_TEMPLATE = """
+            The rental:
+                        
+            📋 **Rental ID:** %d
+            🚘 **Car ID:** %d
+            📆 **Rental Date:** %s
+            🙆 **User ID:** %d
+            🫵🔙 **Expected Return Date:** %s
+            """;
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
@@ -87,7 +90,7 @@ public class RentalServiceImpl implements RentalService {
         carRepository.save(updateCar);
         ResponseRentalDto responseDto = rentalMapper.toResponseDto(
                 rentalRepository.save(updatedRental.get()));
-        notificationService.sendNotification(formMessage(responseDto) + " is returned");
+        notificationService.sendNotification( formMessage(responseDto) + " is returned");
         return responseDto;
     }
 
@@ -139,7 +142,7 @@ public class RentalServiceImpl implements RentalService {
         List<Rental> overdueRentals = rentalRepository
                 .findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
         if (overdueRentals.isEmpty()) {
-            notificationService.sendNotification("No rentals overdue today🤤");
+            notificationService.sendNotification("No rentals overdue today\uD83E\uDD24");
             return;
         }
         for (Rental rental : overdueRentals) {
