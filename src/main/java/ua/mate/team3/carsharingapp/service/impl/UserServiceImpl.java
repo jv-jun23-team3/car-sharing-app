@@ -11,6 +11,7 @@ import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationResponseDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserInfoRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UserDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.exception.RegistrationException;
 import ua.mate.team3.carsharingapp.mapper.UserMapper;
@@ -49,13 +50,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
+    public UserDto updateUserRole(Long id, UpdateUserRoleRequestDto requestDto) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("Can`t find user by id: " + id));
         Set<Role> newRoles = new HashSet<>();
         newRoles.add(roleRepository.getRoleByName(requestDto.getRole()));
         user.setRoles(newRoles);
-        userRepository.save(user);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserInfoRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UserDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.service.UserService;
 
@@ -27,9 +28,9 @@ public class UserController {
             + "of users,  and vice versa")
     @PutMapping("/{id}/role")
     @PreAuthorize("hasRole('MANAGER')")
-    public void updateUserRole(@PathVariable Long id,
-                               @RequestBody UpdateUserRoleRequestDto requestDto) {
-        userService.updateUserRole(id, requestDto);
+    public UserDto updateUserRole(@PathVariable Long id,
+                                  @RequestBody UpdateUserRoleRequestDto requestDto) {
+        return userService.updateUserRole(id, requestDto);
     }
 
     @Operation(summary = "Get user profile info", description = "The customers can get profile"
