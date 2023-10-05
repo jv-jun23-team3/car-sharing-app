@@ -28,7 +28,6 @@ public class RentalController {
 
     @Operation(summary = "Create new rental", description = "Add a new rental to available car")
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseRentalDto createRental(
             @RequestBody @Valid CreateRentalRequestDto rentalRequestDto) {
         return rentalService.save(rentalRequestDto);
@@ -46,14 +45,12 @@ public class RentalController {
     }
 
     @Operation(summary = "Get rental by id", description = "Get existing rental by id")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/{id}")
     public ResponseRentalDto getById(@PathVariable Long id) {
         return rentalService.getById(id);
     }
 
     @Operation(summary = "Update car rental", description = "Set actual return date")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PutMapping("/{id}/return")
     public ResponseRentalDto update(@PathVariable Long id) {
         return rentalService.update(id);
