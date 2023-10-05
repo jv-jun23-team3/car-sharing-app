@@ -1,6 +1,5 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ import ua.mate.team3.carsharingapp.model.Car;
 import ua.mate.team3.carsharingapp.model.Rental;
 import ua.mate.team3.carsharingapp.repository.CarRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
-import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.RentalService;
 
@@ -29,7 +28,6 @@ public class RentalServiceImpl implements RentalService {
     private final CarRepository carRepository;
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
-    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional

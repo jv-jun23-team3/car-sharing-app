@@ -1,4 +1,4 @@
-package ua.mate.team3.carsharingapp.security.impl;
+package ua.mate.team3.carsharingapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginResponseDto;
 import ua.mate.team3.carsharingapp.model.User;
-import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.AuthenticationService;
 import ua.mate.team3.carsharingapp.security.JwtUtil;
 
 @Service

@@ -1,4 +1,4 @@
-package ua.mate.team3.carsharingapp.security;
+package ua.mate.team3.carsharingapp.service;
 
 import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginResponseDto;
