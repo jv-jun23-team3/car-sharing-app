@@ -40,6 +40,7 @@ public class CarControllerTest {
     private static CreateCarRequestDto createCarRequestDto1;
     private static CarDto carDto1;
     private static CarDto carDto2;
+    private static final Long VALID_ID = 1L;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -63,7 +64,7 @@ public class CarControllerTest {
         createCarRequestDto1.setDailyFee(new BigDecimal("100.00"));
 
         carDto1 = new CarDto();
-        carDto1.setId(1L);
+        carDto1.setId(VALID_ID);
         carDto1.setModel(createCarRequestDto1.getModel());
         carDto1.setBrand(createCarRequestDto1.getBrand());
         carDto1.setType(createCarRequestDto1.getType());
@@ -71,7 +72,7 @@ public class CarControllerTest {
         carDto1.setDailyFee(createCarRequestDto1.getDailyFee());
 
         carDto2 = new CarDto();
-        carDto2.setId(2L);
+        carDto2.setId(VALID_ID + VALID_ID);
         carDto2.setModel("Model X");
         carDto2.setBrand("Tesla");
         carDto2.setType(Car.TypeName.SUV);
@@ -122,7 +123,7 @@ public class CarControllerTest {
     @WithMockUser(username = "CUSTOMER", roles = {"CUSTOMER"})
     void getById_validCar_returnResponse() throws Exception {
         MvcResult result = mockMvc.perform(
-                        get("/cars/1")
+                        get("/cars/" + VALID_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -138,7 +139,7 @@ public class CarControllerTest {
     @WithMockUser(username = "MANAGER", roles = {"MANAGER"})
     @DisplayName("Delete car by valid id")
     void delete_validId_successful() throws Exception {
-        mockMvc.perform(delete("/cars/1"))
+        mockMvc.perform(delete("/cars/" + VALID_ID))
                 .andExpect(status().isNoContent());
     }
 
@@ -148,7 +149,7 @@ public class CarControllerTest {
     void update_validRequest_returnsExpectedCar() throws Exception {
         createCarRequestDto1.setModel("Model Y");
         carDto1.setModel("Model Y");
-        MvcResult mvcResult = mockMvc.perform(put("/cars/1")
+        MvcResult mvcResult = mockMvc.perform(put("/cars/" + VALID_ID)
                         .content(objectMapper.writeValueAsString(createCarRequestDto1))
                         .contentType(MediaType.APPLICATION_JSON)
                 )
