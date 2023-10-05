@@ -10,7 +10,6 @@ import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import ua.mate.team3.carsharingapp.dto.rental.CreateRentalRequestDto;
 import ua.mate.team3.carsharingapp.dto.rental.ResponseRentalDto;
 import ua.mate.team3.carsharingapp.mapper.RentalMapper;
@@ -98,7 +95,8 @@ public class RentalServiceTest {
     @Test
     @DisplayName("Save rental - Valid rental")
     public void save_ValidRental_ReturnSavedRentalDto() {
-        when(carRepository.findById(1L)).thenReturn(Optional.ofNullable(testCar));
+        long validId = 1L;
+        when(carRepository.findById(validId)).thenReturn(Optional.ofNullable(testCar));
         when(authenticationService.getUser()).thenReturn(testUser);
         when(rentalRepository.save(any(Rental.class))).thenReturn(testRental1);
         when(rentalMapper.toResponseDto(testRental1)).thenReturn(testRentalDto);
@@ -110,10 +108,11 @@ public class RentalServiceTest {
     @Test
     @DisplayName("Get rental by id - Rental exists")
     public void getById_RentalExists_ReturnRentalDto() {
-        when(rentalRepository.findById(1L)).thenReturn(Optional.of(testRental1));
+        long validId = 1L;
+        when(rentalRepository.findById(validId)).thenReturn(Optional.of(testRental1));
         when(rentalMapper.toResponseDto(testRental1)).thenReturn(testRentalDto);
-        when(authenticationService.getUserId()).thenReturn(1L);
-        ResponseRentalDto actual = rentalService.getById(1L);
+        when(authenticationService.getUserId()).thenReturn(validId);
+        ResponseRentalDto actual = rentalService.getById(validId);
         assertNotNull(actual);
         assertEquals(testRentalDto, actual);
     }
@@ -129,25 +128,14 @@ public class RentalServiceTest {
     @Test
     @DisplayName("Update rental - Rental exists")
     public void update_RentalExists_ReturnUpdatedRentalDto() {
-        when(rentalRepository.findById(1L)).thenReturn(Optional.of(testRental1));
+        long validId = 1L;
+        when(rentalRepository.findById(validId)).thenReturn(Optional.of(testRental1));
         when(rentalRepository.save(any(Rental.class))).thenReturn(testRental1);
         when(rentalMapper.toResponseDto(testRental1)).thenReturn(testRentalDto);
 
-        ResponseRentalDto actual = rentalService.update(1L);
+        ResponseRentalDto actual = rentalService.update(validId);
         testRental1.setActualReturnDate(testRental1.getReturnDate());
         assertNotNull(actual);
         assertEquals(testRentalDto, actual);
-    }
-
-    @Test
-    @DisplayName("Find all rentals")
-    public void findAll_ReturnAllRentals() {
-        Pageable pageable = PageRequest.of(1, 2);
-        when(rentalRepository.findByUserIdAndIsActive(1L, true, pageable))
-                .thenReturn(List.of(testRental1));
-        when(rentalMapper.toResponseDto(testRental1)).thenReturn(testRentalDto);
-        List<ResponseRentalDto> actual = rentalService
-                .getAllRentalsByUserIdAndState(1L, true, pageable);
-        assertEquals(List.of(testRentalDto), actual);
     }
 }

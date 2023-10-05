@@ -24,7 +24,6 @@ public class RentalController {
     private final RentalService rentalService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseRentalDto createRental(
             @RequestBody @Valid CreateRentalRequestDto rentalRequestDto) {
         return rentalService.save(rentalRequestDto);
@@ -37,13 +36,11 @@ public class RentalController {
         return rentalService.getAllRentalsByUserIdAndState(userId, isActive, pageable);
     }
 
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @GetMapping("/{id}")
     public ResponseRentalDto getById(@PathVariable Long id) {
         return rentalService.getById(id);
     }
 
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PutMapping("/{id}/return")
     public ResponseRentalDto update(@PathVariable Long id) {
         return rentalService.update(id);
