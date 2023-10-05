@@ -53,6 +53,7 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     ) {
         return createResponseEntityFromExceptionErrors(
                 new String[]{e.getMessage()}, HttpStatus.FORBIDDEN);
+    }
 
     @ExceptionHandler(EmptyInventoryException.class)
     protected ResponseEntity<Object> handleEmptyInventoryException(
