@@ -40,7 +40,7 @@ public class UserController {
         return userService.getUserInfo();
     }
 
-    @Operation(summary = "Update user profile information", description = "The customer can change"
+    @Operation(summary = "Update user profile information", description = "The user can change"
             + "information about themselves")
     @PatchMapping("/me")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'MANAGER')")
