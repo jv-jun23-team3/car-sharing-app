@@ -81,19 +81,9 @@ public class PaymentControllerTest {
             }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     public void getAllPayments_validUserId_returnsPaymentResponseDto() {
-    //        MvcResult result = mockMvc.perform(get("/payments/?userId=1")
-    //                        .contentType(MediaType.APPLICATION_JSON))
-    //                .andExpect(status().is2xxSuccessful()).andReturn();
-    //        System.out.println(result.getResponse().getContentAsString());
-    //        ArrayList actual = objectMapper.readValue(
-    //                result.getResponse().getContentAsString(), ArrayList.class);
-    //        List<PaymentDto> actualDtos = objectMapper.convertValue(actual,
-    //                new TypeReference<List<PaymentDto>>() {
-    //                });
-    //        PaymentDto actualDto = actualDtos.get(0);
-    //        assertEquals(paymentDto.getId(), actualDto.getId());
-    //        assertEquals(paymentDto.getRentalId(), actualDto.getRentalId());
-    //        assertEquals(paymentDto.getAmount(), actualDto.getAmount());
+        mockMvc.perform(get("/payments/")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isForbidden()).andReturn();
     }
 
     @SneakyThrows

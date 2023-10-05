@@ -92,14 +92,6 @@ public class StripePaymentServiceTest {
     }
 
     @Test
-    public void getAllPayments_validUserId_returnsPayments() {
-        //        when(paymentRepository.findAllByUserId(anyLong())).thenReturn(List.of(payment));
-        //        when(paymentMapper.toDto(any())).thenReturn(paymentDto);
-        //        assertEquals(List.of(paymentDto), paymentService.getAllPayments(1L));
-        //        verify(paymentRepository).findAllByUserId(anyLong());
-    }
-
-    @Test
     public void getSuccessfulPaymentMessage_validRequest_returnsMessage() {
         when(paymentRepository.getBySessionId(anyString())).thenReturn(payment);
         assertEquals("Payment was successful",
