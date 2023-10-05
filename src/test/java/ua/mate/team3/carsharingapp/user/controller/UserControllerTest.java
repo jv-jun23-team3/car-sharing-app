@@ -32,6 +32,8 @@ public class UserControllerTest {
     private static final String ENDPOINT_CUSTOMER_ROLE = "/users/15/role";
     private static final Role.RoleName CUSTOMER_ROLE = Role.RoleName.ROLE_CUSTOMER;
     private static final Role.RoleName MANAGER_ROLE = Role.RoleName.ROLE_MANAGER;
+    private static final Long MANAGER_ID = 2L;
+    private static final Long CUSTOMER_ID = 1L;
 
     private static MockMvc mockMvc;
     @Autowired
@@ -63,7 +65,7 @@ public class UserControllerTest {
         userRole.setRole(MANAGER_ROLE);
         Role managerRole = new Role();
         managerRole.setName(MANAGER_ROLE);
-        managerRole.setId(2L);
+        managerRole.setId(MANAGER_ID);
 
         String jsonRequest = objectMapper.writeValueAsString(userRole);
 
@@ -97,7 +99,7 @@ public class UserControllerTest {
         userRole.setRole(CUSTOMER_ROLE);
         Role customerRole = new Role();
         customerRole.setName(CUSTOMER_ROLE);
-        customerRole.setId(1L);
+        customerRole.setId(CUSTOMER_ID);
 
         String jsonRequest = objectMapper.writeValueAsString(userRole);
 

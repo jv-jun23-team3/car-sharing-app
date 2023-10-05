@@ -23,18 +23,20 @@ public class UserRepositoryTest {
     private static User expectedUser;
     @Autowired
     private UserRepository userRepository;
+    private static final Long SPARE_ID = 3L;
+    private static final Long CUSTOMER_ID = 1L;
 
     @BeforeAll
     static void beforeAll() {
         expectedUser = new User();
-        expectedUser.setId(3L);
+        expectedUser.setId(SPARE_ID);
         expectedUser.setFirstName("UserName 1");
         expectedUser.setLastName("LastName 1");
         expectedUser.setPassword("Password 1");
         expectedUser.setEmail("email@gmail.com");
         Role role = new Role();
         role.setName(Role.RoleName.ROLE_CUSTOMER);
-        role.setId(1L);
+        role.setId(CUSTOMER_ID);
         expectedUser.setRoles(Collections.singleton(role));
     }
 

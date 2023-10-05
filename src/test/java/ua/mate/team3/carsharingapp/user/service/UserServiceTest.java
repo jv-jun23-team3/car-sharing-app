@@ -29,11 +29,12 @@ import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.RoleRepository;
 import ua.mate.team3.carsharingapp.repository.UserRepository;
 import ua.mate.team3.carsharingapp.security.AuthenticationService;
-import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.impl.UserServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+    private static final Long MANAGER_ID = 2L;
+    private static final Long SPARE_ID = 2L;
     private static UserRegistrationRequestDto requestDto;
     private static UserRegistrationRequestDto requestExistingDto;
     private static User existingUser;
@@ -57,14 +58,12 @@ public class UserServiceTest {
     private RoleRepository roleRepository;
     @Mock
     private AuthenticationService authenticationService;
-    @Mock
-    private NotificationService notificationService;
 
     @BeforeAll
     static void beforeAll() {
         roleCustomer = new Role();
         roleAdmin = new Role();
-        roleAdmin.setId(2L);
+        roleAdmin.setId(MANAGER_ID);
         roleAdmin.setName(Role.RoleName.ROLE_MANAGER);
 
         updateUserRoleRequestDto = new UpdateUserRoleRequestDto();
@@ -84,7 +83,7 @@ public class UserServiceTest {
         user.setPassword("password");
 
         responseDto = new UserRegistrationResponseDto();
-        responseDto.setId(2L);
+        responseDto.setId(SPARE_ID);
         responseDto.setFirstName("John");
         responseDto.setLastName("Doe");
         responseDto.setEmail("john.doe@example.com");
@@ -97,7 +96,7 @@ public class UserServiceTest {
         requestExistingDto.setRepeatPassword("securePassword123");
 
         existingUser = new User();
-        existingUser.setId(1L);
+        existingUser.setId(SPARE_ID);
         existingUser.setRoles(Set.of(roleAdmin));
         existingUser.setPassword("securePassword123");
         existingUser.setEmail("adminEmail");
@@ -106,14 +105,14 @@ public class UserServiceTest {
 
         existingUserDto = new UserDto();
         existingUserDto.setEmail("adminEmail");
-        existingUserDto.setId(1L);
+        existingUserDto.setId(SPARE_ID);
         existingUserDto.setPassword("securePassword123");
         existingUserDto.setRoles(Set.of(roleAdmin));
         existingUserDto.setFirstName("admin");
         existingUserDto.setLastName("admin");
 
         userInfoResponseDto = new UserInfoResponseDto();
-        userInfoResponseDto.setId(1L);
+        userInfoResponseDto.setId(SPARE_ID);
         userInfoResponseDto.setEmail("admin@example.com");
         userInfoResponseDto.setFirstName("admin");
         userInfoResponseDto.setLastName("admin");
@@ -150,7 +149,7 @@ public class UserServiceTest {
 
         when(userRepository.save(any())).thenReturn(existingUser);
         when(userMapper.toDto(any())).thenReturn(existingUserDto);
-        assertEquals(existingUserDto, userService.updateUserRole(1L, updateUserRoleRequestDto));
+        assertEquals(existingUserDto, userService.updateUserRole(SPARE_ID, updateUserRoleRequestDto));
     }
 
     @Test
@@ -159,7 +158,6 @@ public class UserServiceTest {
         when(authenticationService.getUser()).thenReturn(existingUser);
 
         when(userMapper.toInfoDto(existingUser)).thenReturn(userInfoResponseDto);
-        // Verify that the registration was successful and the response is as expected
         assertEquals(userInfoResponseDto, userService.getUserInfo());
     }
 
