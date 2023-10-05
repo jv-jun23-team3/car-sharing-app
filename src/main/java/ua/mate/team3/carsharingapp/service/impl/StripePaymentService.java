@@ -64,7 +64,7 @@ public class StripePaymentService implements PaymentService {
         payment.setAmount(amount.divide(BigDecimal.valueOf(FROM_CENTS_TO_DOLLARS)));
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The rental is returned and payment: " + payment + " is pending");
+                "The rental is returned and payment with id: " + payment.getId() + " is pending");
         return paymentMapper.toDtoFromSession(session);
     }
 
@@ -73,7 +73,7 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.PAID);
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The payment: " + payment + " is paid successfully");
+                "The payment with id: " + payment.getId() + " is paid successfully");
         return SUCCESSFUL_PAYMENT;
     }
 
@@ -87,7 +87,7 @@ public class StripePaymentService implements PaymentService {
         payment.setStatus(Payment.Status.CANCELLED);
         paymentRepository.save(payment);
         notificationService.sendNotification(
-                "The payment: " + payment + " is paused");
+                "The payment with id: " + payment.getId() + " is paused");
         return PAYMENT_PAUSED;
     }
 
