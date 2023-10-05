@@ -1,7 +1,14 @@
 package ua.mate.team3.carsharingapp.user.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +20,7 @@ import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationResponseDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserInfoRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UpdateUserRoleRequestDto;
+import ua.mate.team3.carsharingapp.dto.user.profile.UserDto;
 import ua.mate.team3.carsharingapp.dto.user.profile.UserInfoResponseDto;
 import ua.mate.team3.carsharingapp.exception.RegistrationException;
 import ua.mate.team3.carsharingapp.mapper.UserMapper;
@@ -24,15 +32,19 @@ import ua.mate.team3.carsharingapp.security.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.impl.UserServiceImpl;
 
-import java.util.Optional;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+    private static UserRegistrationRequestDto requestDto;
+    private static UserRegistrationRequestDto requestExistingDto;
+    private static User existingUser;
+    private static UserDto existingUserDto;
+    private static User user;
+    private static Role roleCustomer;
+    private static Role roleAdmin;
+    private static UserRegistrationResponseDto responseDto;
+    private static UpdateUserRoleRequestDto updateUserRoleRequestDto;
+    private static UpdateUserInfoRequestDto updateUserInfoRequestDto;
+    private static UserInfoResponseDto userInfoResponseDto;
     @InjectMocks
     private UserServiceImpl userService;
     @Mock
@@ -48,29 +60,15 @@ public class UserServiceTest {
     @Mock
     private NotificationService notificationService;
 
-    private static UserRegistrationRequestDto requestDto;
-    private static UserRegistrationRequestDto requestExistingDto;
-    private static User existingUser;
-    private static User user;
-    private static Role roleCustomer;
-    private static Role roleAdmin;
-    private static UserRegistrationResponseDto responseDto;
-    private static UpdateUserRoleRequestDto updateUserRoleRequestDto;
-    private static UpdateUserInfoRequestDto updateUserInfoRequestDto;
-
-    private static UserInfoResponseDto userInfoResponseDto;
-
     @BeforeAll
     static void beforeAll() {
-        roleCustomer  = new Role();
-        roleCustomer.setName(Role.RoleName.ROLE_CUSTOMER);
-        roleCustomer.setId(1L);
+        roleCustomer = new Role();
         roleAdmin = new Role();
         roleAdmin.setId(2L);
         roleAdmin.setName(Role.RoleName.ROLE_MANAGER);
 
         updateUserRoleRequestDto = new UpdateUserRoleRequestDto();
-        updateUserRoleRequestDto.setRole(roleCustomer);
+        updateUserRoleRequestDto.setRole(Role.RoleName.ROLE_CUSTOMER);
 
         requestDto = new UserRegistrationRequestDto();
         requestDto.setFirstName("John");
@@ -102,8 +100,17 @@ public class UserServiceTest {
         existingUser.setId(1L);
         existingUser.setRoles(Set.of(roleAdmin));
         existingUser.setPassword("securePassword123");
+        existingUser.setEmail("adminEmail");
         existingUser.setFirstName("admin");
         existingUser.setLastName("admin");
+
+        existingUserDto = new UserDto();
+        existingUserDto.setEmail("adminEmail");
+        existingUserDto.setId(1L);
+        existingUserDto.setPassword("securePassword123");
+        existingUserDto.setRoles(Set.of(roleAdmin));
+        existingUserDto.setFirstName("admin");
+        existingUserDto.setLastName("admin");
 
         userInfoResponseDto = new UserInfoResponseDto();
         userInfoResponseDto.setId(1L);
@@ -142,8 +149,8 @@ public class UserServiceTest {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
 
         when(userRepository.save(any())).thenReturn(existingUser);
-        // Verify that the registration was successful and the response is as expected
-        assertEquals(existingUser, userService.updateUserRole(1L, updateUserRoleRequestDto));
+        when(userMapper.toDto(any())).thenReturn(existingUserDto);
+        assertEquals(existingUserDto, userService.updateUserRole(1L, updateUserRoleRequestDto));
     }
 
     @Test
@@ -158,7 +165,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("Update user first and last name")
-    public void updateUserInfo_existingUser_success(){
+    public void updateUserInfo_existingUser_success() {
         when(authenticationService.getUser()).thenReturn(existingUser);
         when(userMapper.toInfoDto(any())).thenReturn(userInfoResponseDto);
         assertEquals(userInfoResponseDto, userService.updateUserInfo(updateUserInfoRequestDto));
