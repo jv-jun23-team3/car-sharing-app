@@ -24,8 +24,8 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "Registration of user", description = "Validate user`s login and password, "
-            + "if all input parameters is valid, return created JWT Token to current user.")
+    @Operation(summary = "Registration of user", description = "Validate user`s login and password,"
+            + " if all input parameters is valid, return created JWT Token to current user.")
     @PostMapping("/register")
     public UserRegistrationResponseDto register(
             @RequestBody @Valid UserRegistrationRequestDto registrationRequest)
