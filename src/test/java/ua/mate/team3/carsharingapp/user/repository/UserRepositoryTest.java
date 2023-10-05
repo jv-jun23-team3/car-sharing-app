@@ -20,11 +20,11 @@ import ua.mate.team3.carsharingapp.repository.UserRepository;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserRepositoryTest {
+    private static final Long SPARE_ID = 3L;
+    private static final Long CUSTOMER_ID = 1L;
     private static User expectedUser;
     @Autowired
     private UserRepository userRepository;
-    private static final Long SPARE_ID = 3L;
-    private static final Long CUSTOMER_ID = 1L;
 
     @BeforeAll
     static void beforeAll() {

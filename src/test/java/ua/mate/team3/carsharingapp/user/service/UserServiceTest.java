@@ -149,7 +149,8 @@ public class UserServiceTest {
 
         when(userRepository.save(any())).thenReturn(existingUser);
         when(userMapper.toDto(any())).thenReturn(existingUserDto);
-        assertEquals(existingUserDto, userService.updateUserRole(SPARE_ID, updateUserRoleRequestDto));
+        assertEquals(existingUserDto,
+                userService.updateUserRole(SPARE_ID, updateUserRoleRequestDto));
     }
 
     @Test
