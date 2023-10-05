@@ -18,7 +18,7 @@ import ua.mate.team3.carsharingapp.model.Role;
 import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.RoleRepository;
 import ua.mate.team3.carsharingapp.repository.UserRepository;
-import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.UserService;
 

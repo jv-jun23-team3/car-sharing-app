@@ -13,7 +13,7 @@ import ua.mate.team3.carsharingapp.dto.user.auth.UserLoginResponseDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationRequestDto;
 import ua.mate.team3.carsharingapp.dto.user.auth.UserRegistrationResponseDto;
 import ua.mate.team3.carsharingapp.exception.RegistrationException;
-import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.UserService;
 
 @Tag(name = "Auth controller", description = "Endpoints for managing authorization")

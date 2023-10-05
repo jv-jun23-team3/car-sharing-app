@@ -27,7 +27,7 @@ import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.CarRepository;
 import ua.mate.team3.carsharingapp.repository.PaymentRepository;
 import ua.mate.team3.carsharingapp.repository.RentalRepository;
-import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.AuthenticationService;
 import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.RentalService;
 
