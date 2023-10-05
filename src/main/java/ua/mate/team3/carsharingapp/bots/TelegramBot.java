@@ -14,9 +14,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ua.mate.team3.carsharingapp.exception.NotificationException;
 
 public class TelegramBot extends TelegramLongPollingBot {
-    private static final String WELCOME_MESSAGE = ". Welcome to the Car Sharing Bot. "
-            + "With this bot, you will be able to receive "
-            + "notifications about the status of users' rentals.";
+    private static final String WELCOME_MESSAGE = ". Welcome to the Car Sharing Bot🤌."
+            + " With this bot, you will be able to receive notifications📣"
+            + " about the status of users' rentals🧾.";
     private static final String START_COMMAND = "/start";
     private static final String COMMAND_NOT_FOUND_MESSAGE = "Sorry, command not found";
     private final String botUserName;
