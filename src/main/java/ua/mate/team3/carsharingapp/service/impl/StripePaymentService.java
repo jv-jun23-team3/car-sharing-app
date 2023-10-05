@@ -44,6 +44,7 @@ public class StripePaymentService implements PaymentService {
     private static final String CANCEL_URL = "http://localhost:8088/payments/cancel";
     private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
     private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
+    private static final Long FROM_CENTS_TO_DOLLARS = 100L;
 
     private final RentalRepository rentalRepository;
     private final PaymentRepository paymentRepository;
