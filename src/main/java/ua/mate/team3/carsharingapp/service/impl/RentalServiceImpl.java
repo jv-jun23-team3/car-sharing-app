@@ -1,6 +1,5 @@
 package ua.mate.team3.carsharingapp.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -13,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ua.mate.team3.carsharingapp.dto.rental.CreateRentalRequestDto;
 import ua.mate.team3.carsharingapp.dto.rental.ResponseRentalDto;
+import ua.mate.team3.carsharingapp.exception.EmptyInventoryException;
 import ua.mate.team3.carsharingapp.mapper.RentalMapper;
 import ua.mate.team3.carsharingapp.model.Car;
 import ua.mate.team3.carsharingapp.model.Rental;
@@ -30,7 +30,6 @@ public class RentalServiceImpl implements RentalService {
     private final CarRepository carRepository;
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
-    private final ObjectMapper objectMapper;
 
     @Override
     @Transactional
@@ -83,7 +82,7 @@ public class RentalServiceImpl implements RentalService {
         Car car = carRepository.findById(rentalRequestDto.getCarId())
                 .orElseThrow(() -> new EntityNotFoundException("Car not found"));
         if (car.getInventory() < 1) {
-            throw new IllegalArgumentException("Inventory cannot be less than 0");
+            throw new EmptyInventoryException("Inventory cannot be less than 0");
         }
         car.setInventory(car.getInventory() - 1);
         rental.setCar(carRepository.save(car));
