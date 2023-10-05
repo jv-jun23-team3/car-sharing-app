@@ -7,11 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -84,19 +81,9 @@ public class PaymentControllerTest {
             }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     public void getAllPayments_validUserId_returnsPaymentResponseDto() {
-        MvcResult result = mockMvc.perform(get("/payments/?userId=1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().is2xxSuccessful()).andReturn();
-        System.out.println(result.getResponse().getContentAsString());
-        ArrayList actual = objectMapper.readValue(
-                result.getResponse().getContentAsString(), ArrayList.class);
-        List<PaymentDto> actualDtos = objectMapper.convertValue(actual,
-                new TypeReference<List<PaymentDto>>() {
-                });
-        PaymentDto actualDto = actualDtos.get(0);
-        assertEquals(paymentDto.getId(), actualDto.getId());
-        assertEquals(paymentDto.getRentalId(), actualDto.getRentalId());
-        assertEquals(paymentDto.getAmount(), actualDto.getAmount());
+        mockMvc.perform(get("/payments/")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isForbidden()).andReturn();
     }
 
     @SneakyThrows

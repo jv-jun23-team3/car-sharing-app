@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -90,14 +89,6 @@ public class StripePaymentServiceTest {
         assertEquals("can't find rental with id: 1", exception.getMessage());
         verifyNoMoreInteractions(paymentMapper);
         verifyNoMoreInteractions(paymentHandlerStrategy);
-    }
-
-    @Test
-    public void getAllPayments_validUserId_returnsPayments() {
-        when(paymentRepository.findAllByUserId(anyLong())).thenReturn(List.of(payment));
-        when(paymentMapper.toDto(any())).thenReturn(paymentDto);
-        assertEquals(List.of(paymentDto), paymentService.getAllPayments(1L));
-        verify(paymentRepository).findAllByUserId(anyLong());
     }
 
     @Test

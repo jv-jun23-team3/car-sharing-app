@@ -14,9 +14,8 @@ public class FeeHandlerImpl implements PaymentHandler {
     @Override
     public BigDecimal handlePayment(LocalDateTime from, LocalDateTime to, BigDecimal pricePerDay) {
         long daysBetween = ChronoUnit.DAYS.between(from, to);
-        BigDecimal totalPrice = pricePerDay.multiply(BigDecimal.valueOf(daysBetween))
-                .multiply(DEFAULT_FEE).multiply(MULTIPLICAND_FROM_DOLLAR_TO_CENTS);;
-        return totalPrice;
+        return pricePerDay.multiply(BigDecimal.valueOf(daysBetween))
+                .multiply(DEFAULT_FEE).multiply(MULTIPLICAND_FROM_DOLLAR_TO_CENTS);
     }
 
     @Override
