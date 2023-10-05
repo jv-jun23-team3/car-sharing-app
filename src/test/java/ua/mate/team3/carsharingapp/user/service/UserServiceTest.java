@@ -29,6 +29,7 @@ import ua.mate.team3.carsharingapp.model.User;
 import ua.mate.team3.carsharingapp.repository.RoleRepository;
 import ua.mate.team3.carsharingapp.repository.UserRepository;
 import ua.mate.team3.carsharingapp.security.AuthenticationService;
+import ua.mate.team3.carsharingapp.service.NotificationService;
 import ua.mate.team3.carsharingapp.service.impl.UserServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,6 +59,8 @@ public class UserServiceTest {
     private RoleRepository roleRepository;
     @Mock
     private AuthenticationService authenticationService;
+    @Mock
+    private NotificationService notificationService;
 
     @BeforeAll
     static void beforeAll() {
