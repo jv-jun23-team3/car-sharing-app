@@ -24,7 +24,7 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "Login of user", description = "Validate user`s login and password, "
+    @Operation(summary = "Registration of user", description = "Validate user`s login and password, "
             + "if all input parameters is valid, return created JWT Token to current user.")
     @PostMapping("/register")
     public UserRegistrationResponseDto register(
@@ -33,7 +33,7 @@ public class AuthController {
         return userService.register(registrationRequest);
     }
 
-    @Operation(summary = "Registration of user", description = "Checks user input parameters"
+    @Operation(summary = "Login of user", description = "Checks user input parameters"
             + " and validate them, if email does not exist in data base,"
             + " and password and repeat password are equals, saves the user to db.")
     @PostMapping("/login")
