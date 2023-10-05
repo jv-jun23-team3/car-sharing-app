@@ -35,6 +35,12 @@ import ua.mate.team3.carsharingapp.service.RentalService;
 @RequiredArgsConstructor
 public class RentalServiceImpl implements RentalService {
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
+    private static final String RENTAL_INFO_TEMPLATE = "The rental: "
+            + "\n📋 **Rental ID:** %d"
+            + "\n🚘 **Car ID:** %d"
+            + "\n📆 **Rental Date:** %s"
+            + "\n🙆 **User ID:** %d"
+            + "\n🫵🔙 **Expected Return Date:** %s";
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
     private final CarRepository carRepository;
@@ -52,8 +58,9 @@ public class RentalServiceImpl implements RentalService {
         }
         ResponseRentalDto responseDto = rentalMapper.toResponseDto(
                 rentalRepository.save(createRental(requestDto)));
+
         notificationService.sendNotification(
-                "New rental " + responseDto + " is created successfully");
+                formMessage(responseDto) + " is created successfully");
         return responseDto;
     }
 
@@ -78,9 +85,10 @@ public class RentalServiceImpl implements RentalService {
         Car updateCar = updatedRental.get().getCar();
         updateCar.setInventory(updateCar.getInventory() + 1);
         carRepository.save(updateCar);
-        notificationService.sendNotification("The rental "
-                + updatedRental.get() + " is returned");
-        return rentalMapper.toResponseDto(rentalRepository.save(updatedRental.get()));
+        ResponseRentalDto responseDto = rentalMapper.toResponseDto(
+                rentalRepository.save(updatedRental.get()));
+        notificationService.sendNotification(formMessage(responseDto) + " is returned");
+        return responseDto;
     }
 
     @Override
@@ -126,6 +134,20 @@ public class RentalServiceImpl implements RentalService {
         return grantedAuthority;
     }
 
+    @Scheduled(cron = "0 0 0 * * ?") // This will run the method every day at midnight
+    public void handleOverdueRentals() {
+        List<Rental> overdueRentals = rentalRepository
+                .findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
+        if (overdueRentals.isEmpty()) {
+            notificationService.sendNotification("No rentals overdue today🤤");
+            return;
+        }
+        for (Rental rental : overdueRentals) {
+            notificationService.sendNotification(formMessage(
+                    rentalMapper.toResponseDto(rental)) + " is overdue");
+        }
+    }
+
     private Rental createRental(CreateRentalRequestDto rentalRequestDto) {
         Rental rental = new Rental();
         rental.setRentalDate(LocalDateTime.now());
@@ -141,16 +163,12 @@ public class RentalServiceImpl implements RentalService {
         return rental;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?") // This will run the method every day at midnight
-    public void handleOverdueRentals() {
-        List<Rental> overdueRentals = rentalRepository
-                .findAllByActualReturnDateIsNullAndReturnDateBefore(LocalDateTime.now());
-        if (overdueRentals.isEmpty()) {
-            notificationService.sendNotification("No rentals overdue today!");
-            return;
-        }
-        for (Rental rental : overdueRentals) {
-            notificationService.sendNotification("Rental: " + rental + " is overdue");
-        }
+    private String formMessage(ResponseRentalDto rentalDto) {
+        return String.format(RENTAL_INFO_TEMPLATE,
+                rentalDto.getId(),
+                rentalDto.getCarId(),
+                rentalDto.getRentalDate(),
+                rentalDto.getUserId(),
+                rentalDto.getReturnDate());
     }
 }
