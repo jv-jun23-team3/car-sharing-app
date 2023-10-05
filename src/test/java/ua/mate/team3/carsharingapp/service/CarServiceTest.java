@@ -35,6 +35,7 @@ public class CarServiceTest {
     private static Car testCar;
     private static CarDto testCarDto;
     private static CreateCarRequestDto createCarRequestDto;
+    private static final Long VALID_ID = 1L;
 
     @Mock
     private CarRepository carRepository;
@@ -46,11 +47,11 @@ public class CarServiceTest {
     @BeforeEach
     public void setUp() {
         testCar = new Car();
-        testCar.setId(1L);
+        testCar.setId(VALID_ID);
         testCar.setModel("testModel");
         testCar.setBrand("testBrand");
         testCar.setType(Car.TypeName.SEDAN);
-        testCar.setInventory(1);
+        testCar.setInventory(VALID_ID.intValue());
         testCar.setDailyFee(BigDecimal.ONE);
 
         testCarDto = new CarDto();
@@ -83,9 +84,9 @@ public class CarServiceTest {
     @Test
     @DisplayName("Find all cars")
     public void findAll_ReturnAllCars() {
-        Pageable pageable = PageRequest.of(1, 2);
+        Pageable pageable = PageRequest.of(VALID_ID.intValue(), 2);
         Page<Car> carPage =
-                new PageImpl<>(List.of(testCar), pageable, 1);
+                new PageImpl<>(List.of(testCar), pageable, VALID_ID.intValue());
         when(carRepository.findAll(pageable)).thenReturn(carPage);
         when(carMapper.toDto(testCar)).thenReturn(testCarDto);
         List<CarDto> actual = carService.findAll(pageable);
@@ -95,9 +96,9 @@ public class CarServiceTest {
     @Test
     @DisplayName("Get car by id - Car exists")
     public void getById_CarExists_ReturnCarDto() {
-        when(carRepository.findById(1L)).thenReturn(Optional.of(testCar));
+        when(carRepository.findById(VALID_ID)).thenReturn(Optional.of(testCar));
         when(carMapper.toDto(testCar)).thenReturn(testCarDto);
-        CarDto actual = carService.getById(1L);
+        CarDto actual = carService.getById(VALID_ID);
         assertNotNull(actual);
         assertEquals(testCarDto, actual);
     }
@@ -113,9 +114,9 @@ public class CarServiceTest {
     @Test
     @DisplayName("Delete car by id")
     public void deleteById_CarExists_DeleteSuccessfully() {
-        doNothing().when(carRepository).deleteById(1L);
-        carService.deleteById(1L);
-        verify(carRepository, times(1)).deleteById(1L);
+        doNothing().when(carRepository).deleteById(VALID_ID);
+        carService.deleteById(VALID_ID);
+        verify(carRepository, times(VALID_ID.intValue())).deleteById(VALID_ID);
     }
 
     @Test
@@ -125,7 +126,7 @@ public class CarServiceTest {
         when(carRepository.save(testCar)).thenReturn(testCar);
         when(carMapper.toDto(testCar)).thenReturn(testCarDto);
 
-        CarDto actual = carService.update(1L, createCarRequestDto);
+        CarDto actual = carService.update(VALID_ID, createCarRequestDto);
         assertNotNull(actual);
         assertEquals(testCarDto, actual);
     }
