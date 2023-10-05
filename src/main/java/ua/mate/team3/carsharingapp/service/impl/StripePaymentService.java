@@ -31,7 +31,7 @@ import ua.mate.team3.carsharingapp.service.strategy.PaymentHandlerStrategy;
 public class StripePaymentService implements PaymentService {
     private static final String PAYMENT_PAUSED = "Payment Paused";
     private static final String CURRENCY = "usd";
-    private static final String SUCCESS_URL = "http://localhost:8080/api/payments/success";
+    private static final String SUCCESS_URL = "http://localhost:8088/api/payments/success";
     private static final String CANCEL_URL = "http://localhost:8080/api/payments/cancel";
     private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
     private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
