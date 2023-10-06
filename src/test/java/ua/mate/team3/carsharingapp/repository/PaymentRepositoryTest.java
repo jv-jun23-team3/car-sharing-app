@@ -25,11 +25,11 @@ public class PaymentRepositoryTest {
             }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     void findAllByUserId_validUserId_returnsPayment() {
-        List<Payment> payments = paymentRepository.findAllByUserId(1L);
+        List<Payment> payments = paymentRepository.findAllByUserId(2L);
         assertEquals(1, payments.size());
         Payment payment = payments.get(0);
         assertEquals(1L, payment.getId());
-        assertEquals(1L, payment.getRental().getUser().getId());
+        assertEquals(2L, payment.getRental().getUser().getId());
         assertEquals(1L, payment.getRental().getId());
         assertNotNull(payment.getSessionId());
         assertNotNull(payment.getSessionUrl());
