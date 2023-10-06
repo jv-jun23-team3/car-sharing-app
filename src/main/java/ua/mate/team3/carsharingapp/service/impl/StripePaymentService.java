@@ -40,8 +40,8 @@ public class StripePaymentService implements PaymentService {
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
     private static final String PAYMENT_PAUSED = "Payment Paused";
     private static final String CURRENCY = "usd";
-    private static final String SUCCESS_URL = "http://localhost:8088/payments/success";
-    private static final String CANCEL_URL = "http://localhost:8088/payments/cancel";
+    private static final String SUCCESS_URL = "http://localhost:8088/api/payments/success";
+    private static final String CANCEL_URL = "http://localhost:8088/api/payments/cancel";
     private static final String SESSION_ID_PARAM = "?sessionId={CHECKOUT_SESSION_ID}";
     private static final String SUCCESSFUL_PAYMENT = "Payment was successful";
     private static final Long FROM_CENTS_TO_DOLLARS = 100L;

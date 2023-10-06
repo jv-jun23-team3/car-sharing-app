@@ -14,6 +14,7 @@ import ua.mate.team3.carsharingapp.model.Payment;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class PaymentRepositoryTest {
+
     @Autowired
     private PaymentRepository paymentRepository;
 
@@ -25,12 +26,15 @@ public class PaymentRepositoryTest {
             }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @Test
     void findAllByUserId_validUserId_returnsPayment() {
-        List<Payment> payments = paymentRepository.findAllByUserId(1L);
-        assertEquals(1, payments.size());
+        List<Payment> payments = paymentRepository.findAllByUserId(2L);
+        int validSize = 1;
+        long validId = 1L;
+        assertEquals(validSize, payments.size());
         Payment payment = payments.get(0);
-        assertEquals(1L, payment.getId());
-        assertEquals(1L, payment.getRental().getUser().getId());
-        assertEquals(1L, payment.getRental().getId());
+        assertEquals(validId, payment.getId());
+        long validUserId = 2L;
+        assertEquals(validUserId, payment.getRental().getUser().getId());
+        assertEquals(validId, payment.getRental().getId());
         assertNotNull(payment.getSessionId());
         assertNotNull(payment.getSessionUrl());
     }

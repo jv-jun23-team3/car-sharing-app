@@ -8,7 +8,7 @@ INSERT INTO user_role (user_id, role_id)
 VALUES (2, 1);
 
 INSERT INTO rentals (id, rental_date, return_date, actual_return_date, car_id, user_id, is_deleted)
-VALUES (1, '2024-09-03 13:42:15', '2024-10-03 13:42:23', '2024-10-03 13:42:29', 1, 1, DEFAULT);
+VALUES (1, '2024-09-03 13:42:15', '2024-10-03 13:42:23', '2024-10-03 13:42:29', 1, 2, DEFAULT);
 
 INSERT INTO payments (id, status, type, rental_id, session_url, session_id, amount, is_deleted)
 VALUES (1, 'PENDING', 'PAYMENT', 1,
