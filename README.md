@@ -73,8 +73,7 @@ Welcome to the Car Sharing Service! This project is dedicated to revolutionizing
 4. You can use Postman for sending requests. Here is our [postman collection](Car_Sharing_App.postman_collection.json).
 ### AWS
 
-You also can use our API with swagger just in [one click](http://ec2-52-90-65-210.compute-1.
-amazonaws.com/api/swagger-ui/index.html#/)
+You also can use our API with swagger just in [one click](http://ec2-52-90-65-210.compute-1.amazonaws.com/api/swagger-ui/index.html#/)
 
 ## Challenges and Solutions
 
