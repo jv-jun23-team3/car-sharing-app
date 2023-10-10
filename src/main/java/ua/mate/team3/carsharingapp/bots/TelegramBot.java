@@ -2,7 +2,9 @@ package ua.mate.team3.carsharingapp.bots;
 
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -19,9 +21,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             + " about the status of users' rentals🧾.";
     private static final String START_COMMAND = "/start";
     private static final String COMMAND_NOT_FOUND_MESSAGE = "Sorry, command not found";
-    private final String botUserName;
     @Getter
-    private Long chatId;
+    private final Set<Long> chatIds = new HashSet<>();
+    private final String botUserName;
     private List<BotCommand> commands;
 
     public TelegramBot(String botToken, String botUserName) {
@@ -38,7 +40,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String message = update.getMessage().getText();
-            chatId = update.getMessage().getChatId();
+            Long chatId = update.getMessage().getChatId();
+            chatIds.add(chatId);
             if (message.equals(START_COMMAND)) {
                 startCommandReceived(chatId, getName(update));
             } else {
